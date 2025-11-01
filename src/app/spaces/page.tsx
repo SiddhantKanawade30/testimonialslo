@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/ui/topbar";
 import { Plus, Copy } from "lucide-react";
 import Link from "next/link";
+import { CreateSpaceDialog } from "@/components/ui/create-space-dialog";
 
 // Mock data - replace with actual API calls
 const mockSpaces = [
@@ -40,6 +42,8 @@ const mockSpaces = [
 ];
 
 export default function SpacesPage() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const handleCopyUrl = (url: string, e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card click when copying URL
     navigator.clipboard.writeText(url);
@@ -55,7 +59,10 @@ export default function SpacesPage() {
             <h1 className="text-2xl font-bold text-text-primary">All Spaces</h1>
             <p className="text-text-secondary mt-1">{mockSpaces.length} spaces created</p>
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors">
+          <button 
+            onClick={() => setIsDialogOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors"
+          >
             <Plus className="size-4" />
             Create New Space
           </button>
@@ -113,12 +120,18 @@ export default function SpacesPage() {
         {mockSpaces.length === 0 && (
           <div className="rounded-lg bg-white p-12 shadow-sm border border-zinc-200 text-center">
             <p className="text-text-secondary mb-4">No spaces created yet</p>
-            <button className="flex items-center gap-2 px-4 py-2 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors mx-auto">
+            <button 
+              onClick={() => setIsDialogOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors mx-auto"
+            >
               <Plus className="size-4" />
               Create Your First Space
             </button>
           </div>
         )}
+
+        {/* Create Space Dialog */}
+        <CreateSpaceDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
       </Topbar>
     </div>
   );

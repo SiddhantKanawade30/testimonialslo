@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useParams } from "next/navigation";
 import { 
   Search, 
   Bell,  
@@ -13,7 +13,9 @@ import {
   ChevronDown,
   User,
   CreditCard,
-  LogOut
+  LogOut,
+  MessageCircle,
+  ChevronRight
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
@@ -40,9 +42,17 @@ interface NavItem {
 const navItems: NavItem[] = [
   { name: "Overview", href: "/", icon: <LayoutGrid className="size-4" /> },
   { name: "Spaces", href: "/spaces", icon: <Airplay className="size-4" /> },
+  { name: "All Testimonials", href: "/all-testimonials", icon: <MessageCircle className="size-4" /> },
   { name: "Archived", href: "/archived", icon: <Archive className="size-4" /> },
   { name: "Favourites", href: "/favourites", icon: <Heart className="size-4" /> },
   { name: "Settings", href: "/settings", icon: <Settings className="size-4" /> }
+];
+
+// Mock data - in real app, this would come from API/context
+const mockSpaces = [
+  { slug: "project-alpha", name: "Project Alpha" },
+  { slug: "marketing", name: "Marketing Team" },
+  { slug: "beta-testing", name: "Beta Testing" },
 ];
 
 function UserProfileDropdown() {
@@ -100,7 +110,27 @@ function UserProfileDropdown() {
 
 export default function Topbar({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const currentPage = navItems.find(item => item.href === pathname) || navItems[0];
+  const params = useParams();
+  
+  // Handle dynamic routes and breadcrumbs
+  const getPageTitle = () => {
+    // Check if we're on a space detail page
+    if (pathname?.startsWith("/spaces/") && pathname !== "/spaces") {
+      const slug = params?.slug as string;
+      const space = mockSpaces.find(s => s.slug === slug);
+      return space ? (
+        <div className="flex items-center gap-2">
+          <span className="text-base font-semibold">Spaces</span>
+          <ChevronRight className="size-4 text-zinc-400" />
+          <span className="text-base font-semibold">{space.name}</span>
+        </div>
+      ) : "Spaces";
+    }
+    
+    // Find exact match or return default
+    const currentPage = navItems.find(item => item.href === pathname) || navItems[0];
+    return currentPage.name;
+  };
 
   return (
     <div className="flex-1 lg:ml-[248px]">
@@ -111,7 +141,7 @@ export default function Topbar({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-3 min-w-0">
             <div className="flex items-center text-md gap-1 text-text-primary">
               <h2 className="text-base font-semibold whitespace-nowrap">
-                {currentPage.name}
+                {getPageTitle()}
               </h2>
             </div>
           </div>

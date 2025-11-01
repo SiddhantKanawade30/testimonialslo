@@ -2,10 +2,20 @@
 
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/ui/topbar";
-import { Star, Archive, ArrowLeft, Copy, List, Grid } from "lucide-react";
+import { Star, Archive, ArrowLeft, Copy, List, Grid, Code, Share2, Heart } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { Toaster, toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 // Mock data - replace with actual API calls
 const mockSpaces = [
@@ -73,13 +83,48 @@ export default function SpaceDetailPage() {
   const params = useParams();
   const slug = params?.slug as string;
   const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [archiveDialogOpen, setArchiveDialogOpen] = useState(false);
+  const [testimonialToArchive, setTestimonialToArchive] = useState<{ id: string; author: string } | null>(null);
   
   const space = mockSpaces.find(s => s.slug === slug);
   const testimonials = space ? spaceTestimonials[slug] || [] : [];
 
+  const toggleFavorite = (testimonialId: string) => {
+    setFavorites(prev => {
+      const newFavorites = new Set(prev);
+      const testimonial = testimonials.find(t => t.id === testimonialId);
+      if (newFavorites.has(testimonialId)) {
+        newFavorites.delete(testimonialId);
+        toast.info("Removed from favorites");
+      } else {
+        newFavorites.add(testimonialId);
+        toast.success("Added to favorites");
+      }
+      return newFavorites;
+    });
+  };
+
+  const handleArchiveClick = (testimonialId: string) => {
+    const testimonial = testimonials.find(t => t.id === testimonialId);
+    if (testimonial) {
+      setTestimonialToArchive({ id: testimonialId, author: testimonial.author });
+      setArchiveDialogOpen(true);
+    }
+  };
+
+  const handleArchiveConfirm = () => {
+    if (testimonialToArchive) {
+      // Here you would handle the actual archiving logic
+      toast.success("Testimonial archived successfully");
+      setArchiveDialogOpen(false);
+      setTestimonialToArchive(null);
+    }
+  };
+
   const handleCopyUrl = (url: string) => {
     navigator.clipboard.writeText(url);
-    // You can add a toast notification here
+    toast.success("URL copied to clipboard");
   };
 
   if (!space) {
@@ -100,6 +145,7 @@ export default function SpaceDetailPage() {
 
   return (
     <div className="flex min-h-screen bg-zinc-50 font-sans">
+      <Toaster position="bottom-right" />
       <Sidebar />
       <Topbar>
         {/* Header */}
@@ -118,14 +164,14 @@ export default function SpaceDetailPage() {
               <p className="text-text-secondary">{space.description}</p>
             </div>
             <div className="flex items-center gap-3">
-              <div className="text-right">
-                <p className="text-sm text-text-secondary">Status</p>
-                <p className="text-sm font-medium text-green-600">{space.status}</p>
-              </div>
+              <button className="flex items-center gap-2 px-4 py-2 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors">
+                <Code className="size-4" />
+                Embed
+              </button>
             </div>
           </div>
 
-          <div className="mt-4 p-3 bg-zinc-50 rounded-lg border border-zinc-200 flex items-center gap-2">
+          <div className="mt-4 px-3 py-1 bg-zinc-50 rounded-lg border border-zinc-200 flex items-center gap-2">
             <input
               type="text"
               value={space.shareUrl}
@@ -143,44 +189,41 @@ export default function SpaceDetailPage() {
         </div>
 
         {/* Testimonials Section */}
-        <div className="rounded-lg bg-white shadow-sm border border-zinc-200">
-          <div className="p-6 border-b border-zinc-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-semibold text-text-primary">Testimonials</h2>
-                <p className="text-sm text-text-secondary mt-1">
-                  {testimonials.length} testimonials in this space
-                </p>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="text-sm text-text-secondary">
-                  Created: {space.createdAt}
-                </div>
-                {/* View Mode Toggle */}
-                <div className="flex items-center gap-1 p-1 bg-zinc-100 rounded-lg">
-                  <button
-                    onClick={() => setViewMode("list")}
-                    className={`p-2 rounded transition-colors ${
-                      viewMode === "list"
-                        ? "bg-white shadow-sm text-text-primary"
-                        : "text-text-secondary hover:text-text-primary"
-                    }`}
-                    title="List View"
-                  >
-                    <List className="size-4" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode("block")}
-                    className={`p-2 rounded transition-colors ${
-                      viewMode === "block"
-                        ? "bg-white shadow-sm text-text-primary"
-                        : "text-text-secondary hover:text-text-primary"
-                    }`}
-                    title="Block View"
-                  >
-                    <Grid className="size-4" />
-                  </button>
-                </div>
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-lg font-semibold text-text-secondary">{testimonials.length} testimonials in this space</h2>
+              
+              <p className="text-sm text-red-600 mt-2 italic text-red-400">
+                Tip: Archive testimonials you don't want to embed
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              
+              {/* View Mode Toggle */}
+              <div className="flex items-center gap-1 p-1 bg-zinc-100 rounded-lg">
+              <button
+                onClick={() => setViewMode("list")}
+                className={`p-2 rounded transition-colors ${
+                  viewMode === "list"
+                    ? "bg-white shadow-sm text-text-primary"
+                    : "text-text-secondary hover:text-text-primary"
+                }`}
+                title="List View"
+              >
+                <List className="size-4" />
+              </button>
+              <button
+                onClick={() => setViewMode("block")}
+                className={`p-2 rounded transition-colors ${
+                  viewMode === "block"
+                    ? "bg-white shadow-sm text-text-primary"
+                    : "text-text-secondary hover:text-text-primary"
+                }`}
+                title="Block View"
+              >
+                <Grid className="size-4" />
+              </button>
               </div>
             </div>
           </div>
@@ -188,13 +231,14 @@ export default function SpaceDetailPage() {
           {testimonials.length > 0 ? (
             viewMode === "list" ? (
               // List View
-              <div className="divide-y divide-zinc-200">
+              <div className="space-y-4">
                 {testimonials.map((testimonial) => (
-                  <div key={testimonial.id} className="p-6 hover:bg-zinc-50 transition-colors">
+                  <div key={testimonial.id} className="rounded-lg bg-white border border-zinc-200 p-6 hover:shadow-md transition-shadow">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <h3 className="font-medium text-text-primary">{testimonial.author}</h3>
+                          <span className="text-sm text-text-secondary">{testimonial.role}</span>
                           <div className="flex items-center gap-1">
                             {[...Array(testimonial.rating)].map((_, i) => (
                               <Star key={i} className="size-4 fill-yellow-400 text-yellow-400" />
@@ -205,11 +249,25 @@ export default function SpaceDetailPage() {
                         <p className="text-xs text-text-secondary">{testimonial.date}</p>
                       </div>
                       <div className="flex items-center gap-2 ml-4">
-                        <button className="p-2 hover:bg-zinc-100 rounded-lg transition-colors">
-                          <Star className="size-4 text-zinc-400 hover:text-yellow-400" />
+                        <button 
+                          onClick={() => toggleFavorite(testimonial.id)}
+                          className="p-2 hover:bg-zinc-100 rounded-lg transition-colors"
+                          title="Add to favorites"
+                        >
+                          <Heart 
+                            className={`size-4 transition-colors ${
+                              favorites.has(testimonial.id)
+                                ? "fill-red-500 text-red-500"
+                                : "text-zinc-400 hover:text-red-500"
+                            }`} 
+                          />
                         </button>
-                        <button className="p-2 hover:bg-zinc-100 rounded-lg transition-colors">
-                          <Archive className="size-4 text-zinc-400" />
+                        <button 
+                          onClick={() => handleArchiveClick(testimonial.id)}
+                          className="p-2 hover:bg-zinc-100 rounded-lg transition-colors"
+                          title="Archive testimonial"
+                        >
+                          <Archive className="size-4 text-zinc-400 hover:text-zinc-600" />
                         </button>
                       </div>
                     </div>
@@ -218,50 +276,62 @@ export default function SpaceDetailPage() {
               </div>
             ) : (
               // Block/Card View
-              <div className="p-6">
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {testimonials.map((testimonial) => (
-                    <div
-                      key={testimonial.id}
-                      className="rounded-lg border border-zinc-200 p-6 hover:shadow-md transition-shadow bg-white"
-                    >
-                      {/* Top Row: Stars on left, Actions on right */}
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-1">
-                          {[...Array(testimonial.rating)].map((_, i) => (
-                            <Star key={i} className="size-5 fill-yellow-400 text-yellow-400" />
-                          ))}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button className="p-2 hover:bg-zinc-100 rounded-lg transition-colors">
-                            <Star className="size-4 text-zinc-400 hover:text-yellow-400" />
-                          </button>
-                          <button className="p-2 hover:bg-zinc-100 rounded-lg transition-colors">
-                            <Archive className="size-4 text-zinc-400" />
-                          </button>
-                        </div>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {testimonials.map((testimonial) => (
+                  <div
+                    key={testimonial.id}
+                    className="rounded-lg bg-white border border-zinc-200 p-6 hover:shadow-md transition-shadow"
+                  >
+                    {/* Top Row: Stars, Favorite, and Archive */}
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-1">
+                        {[...Array(testimonial.rating)].map((_, i) => (
+                          <Star key={i} className="size-5 fill-yellow-400 text-yellow-400" />
+                        ))}
                       </div>
-
-                      {/* Testimonial Text */}
-                      <p className="text-text-secondary mb-6 text-base leading-relaxed">
-                        "{testimonial.text}"
-                      </p>
-
-                      {/* Border */}
-                      <div className="border-t border-zinc-200 mb-4"></div>
-
-                      {/* Name and Role */}
-                      <div>
-                        <h3 className="font-semibold text-text-primary mb-1">
-                          {testimonial.author}
-                        </h3>
-                        <p className="text-sm text-text-secondary">
-                          {testimonial.role}
-                        </p>
+                      <div className="flex items-center gap-2">
+                        <button 
+                          onClick={() => toggleFavorite(testimonial.id)}
+                          className="p-2 hover:bg-zinc-100 rounded-lg transition-colors"
+                          title="Add to favorites"
+                        >
+                          <Heart 
+                            className={`size-4 transition-colors ${
+                              favorites.has(testimonial.id)
+                                ? "fill-red-500 text-red-500"
+                                : "text-zinc-400 hover:text-red-500"
+                            }`} 
+                          />
+                        </button>
+                        <button 
+                          onClick={() => handleArchiveClick(testimonial.id)}
+                          className="p-2 hover:bg-zinc-100 rounded-lg transition-colors"
+                          title="Archive testimonial"
+                        >
+                          <Archive className="size-4 text-zinc-400 hover:text-zinc-600" />
+                        </button>
                       </div>
                     </div>
-                  ))}
-                </div>
+
+                    {/* Testimonial Text */}
+                    <p className="text-text-secondary mb-6 text-base leading-relaxed">
+                      "{testimonial.text}"
+                    </p>
+
+                    {/* Border */}
+                    <div className="border-t border-zinc-200 mb-4"></div>
+
+                    {/* Name and Role */}
+                    <div>
+                      <h3 className="font-semibold text-text-primary mb-1">
+                        {testimonial.author}
+                      </h3>
+                      <p className="text-sm text-text-secondary">
+                        {testimonial.role}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
             )
           ) : (
@@ -273,6 +343,42 @@ export default function SpaceDetailPage() {
             </div>
           )}
         </div>
+
+        {/* Archive Confirmation Dialog */}
+        <Dialog open={archiveDialogOpen} onOpenChange={setArchiveDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Archive Testimonial</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to archive this testimonial? Archived testimonials won't be included in embeds.
+              </DialogDescription>
+            </DialogHeader>
+            {testimonialToArchive && (
+              <div className="py-2">
+                <p className="text-sm text-zinc-600">
+                  <span className="font-medium">{testimonialToArchive.author}</span>'s testimonial will be archived.
+                </p>
+              </div>
+            )}
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setArchiveDialogOpen(false);
+                  setTestimonialToArchive(null);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleArchiveConfirm}
+                className="bg-zinc-900 hover:bg-zinc-800"
+              >
+                Archive
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </Topbar>
     </div>
   );

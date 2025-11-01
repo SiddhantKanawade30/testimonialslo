@@ -72,11 +72,11 @@ export default function ArchivedPage() {
         </div>
 
         {mockArchivedTestimonials.length > 0 ? (
-          <div className="rounded-lg bg-white shadow-sm border border-zinc-200">
+          <div>
             {viewMode === "list" ? (
-              <div className="divide-y divide-zinc-200">
+              <div className="space-y-4">
             {mockArchivedTestimonials.map((testimonial) => (
-              <div key={testimonial.id} className="p-6 hover:bg-zinc-50 transition-colors opacity-75">
+              <div key={testimonial.id} className="rounded-lg bg-white border border-zinc-200 p-6 hover:shadow-md transition-shadow opacity-75">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-3">
@@ -116,13 +116,12 @@ export default function ArchivedPage() {
           </div>
             ) : (
               // Cards View - Variable heights based on content
-              <div className="p-6">
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
-                  {mockArchivedTestimonials.map((testimonial) => (
-                    <div
-                      key={testimonial.id}
-                      className="rounded-lg border border-zinc-200 p-6 hover:shadow-md transition-shadow bg-white flex flex-col opacity-75"
-                    >
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
+                {mockArchivedTestimonials.map((testimonial) => (
+                  <div
+                    key={testimonial.id}
+                    className="rounded-lg bg-white border border-zinc-200 p-6 hover:shadow-md transition-shadow flex flex-col opacity-75"
+                  >
                       {/* Top Row: Badges and Actions */}
                       <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                         <div className="flex items-center gap-2 flex-wrap">
@@ -171,7 +170,6 @@ export default function ArchivedPage() {
                       </div>
                     </div>
                   ))}
-                </div>
               </div>
             )}
           </div>
