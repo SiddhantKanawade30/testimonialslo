@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/ui/topbar";
 import { Plus, Copy } from "lucide-react";
@@ -43,12 +43,15 @@ const mockSpaces = [
 
 export default function SpacesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+ 
 
   const handleCopyUrl = (url: string, e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card click when copying URL
     navigator.clipboard.writeText(url);
     // You can add a toast notification here
   };
+
+
 
   return (
     <div className="flex min-h-screen bg-zinc-50 font-sans">
@@ -131,7 +134,7 @@ export default function SpacesPage() {
         )}
 
         {/* Create Space Dialog */}
-        <CreateSpaceDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+        <CreateSpaceDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} /> 
       </Topbar>
     </div>
   );

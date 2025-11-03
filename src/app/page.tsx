@@ -5,6 +5,8 @@ import Topbar from "@/components/ui/topbar";
 import { Star, Archive } from "lucide-react";
 import { ValueLineBarChart } from "@/components/ui/value-line-bar-chart";
 import { MessageCircleMore, Airplay, Box } from 'lucide-react';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 // Mock data - replace with actual API calls
 const mockTestimonials = [
@@ -42,6 +44,20 @@ const testimonialsChartData = [
 ];
 
 export default function Home() {
+  const router = useRouter();
+  
+useEffect(()=>{
+  const token = localStorage.getItem("token");
+  if(!token){
+    router.push("/signin");
+  }
+
+  
+}, []);
+
+
+
+
   return (
     <div className="flex min-h-screen bg-gray-100 font-sans">
       <Sidebar />

@@ -24,6 +24,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const categories = [
   {
@@ -54,15 +56,15 @@ interface CreateSpaceDialogProps {
 }
 
 export function CreateSpaceDialog({ open, onOpenChange }: CreateSpaceDialogProps) {
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    websiteUrl: "",
-    category: "",
-  });
   const [categoryOpen, setCategoryOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [popoverWidth, setPopoverWidth] = useState<number | undefined>(undefined);
+  
+  // Refs must be declared at component level, not inside functions
+  const spaceNameRef = useRef<HTMLInputElement>(null);
+  const spaceDescriptionRef = useRef<HTMLTextAreaElement>(null);
+  const spaceWebsiteUrlRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (categoryOpen && triggerRef.current) {
@@ -70,25 +72,57 @@ export function CreateSpaceDialog({ open, onOpenChange }: CreateSpaceDialogProps
     }
   }, [categoryOpen]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Form submitted:", formData);
-    // Reset form and close dialog
-    setFormData({ name: "", description: "", websiteUrl: "", category: "" });
-    onOpenChange(false);
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login to create a space");
+      return;
+    }
+
+    const formData = {
+      title: spaceNameRef.current?.value || "",
+      description: spaceDescriptionRef.current?.value || "",
+      websiteUrl: spaceWebsiteUrlRef.current?.value || "",
+      category: selectedCategory,
+    };
+
+    if (!formData.title || !formData.description) {
+      alert("Title and description are required");
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/campaigns/create`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.status === 200 || res.status === 201) {
+        alert("Space created successfully");
+        handleCancel();
+        window.location.reload();
+      } else {
+        alert("Failed to create space");
+      }
+    } catch (error: any) {
+      console.error("Create space error:", error);
+      const errorMessage = error.response?.data?.message || error.message || "Failed to create space";
+      alert(`Error: ${errorMessage}`);
+    }
   };
 
   const handleCancel = () => {
-    setFormData({ name: "", description: "", websiteUrl: "", category: "" });
+    if (spaceNameRef.current) spaceNameRef.current.value = "";
+    if (spaceDescriptionRef.current) spaceDescriptionRef.current.value = "";
+    if (spaceWebsiteUrlRef.current) spaceWebsiteUrlRef.current.value = "";
+    setSelectedCategory("");
     onOpenChange(false);
   };
 
@@ -108,12 +142,11 @@ export function CreateSpaceDialog({ open, onOpenChange }: CreateSpaceDialogProps
               Name of the Space <span className="text-red-500">*</span>
             </label>
             <input
-              id="name"
-              name="name"
+              id="title"
+              name="title"
               type="text"
               required
-              value={formData.name}
-              onChange={handleInputChange}
+              ref={spaceNameRef}
               placeholder="e.g., Project Alpha, Marketing Team"
               className="w-full h-9 px-3 rounded-md border border-zinc-300 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:border-transparent"
             />
@@ -127,8 +160,7 @@ export function CreateSpaceDialog({ open, onOpenChange }: CreateSpaceDialogProps
               id="description"
               name="description"
               required
-              value={formData.description}
-              onChange={handleInputChange}
+              ref={spaceDescriptionRef}
               placeholder="Brief description of what this space is for"
               rows={3}
               className="w-full px-3 py-2 rounded-md border border-zinc-300 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:border-transparent resize-none"
@@ -142,9 +174,8 @@ export function CreateSpaceDialog({ open, onOpenChange }: CreateSpaceDialogProps
             <input
               id="websiteUrl"
               name="websiteUrl"
-              type="url"
-              value={formData.websiteUrl}
-              onChange={handleInputChange}
+              type="text"
+              ref={spaceWebsiteUrlRef}
               placeholder="https://example.com"
               className="w-full h-9 px-3 rounded-md border border-zinc-300 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:border-transparent"
             />
@@ -163,8 +194,8 @@ export function CreateSpaceDialog({ open, onOpenChange }: CreateSpaceDialogProps
                   aria-expanded={categoryOpen}
                   className="w-full justify-between h-9"
                 >
-                  {formData.category
-                    ? categories.find((category) => category.value === formData.category)?.label
+                  {selectedCategory
+                    ? categories.find((category) => category.value === selectedCategory)?.label
                     : "Select a category (optional)"}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
@@ -183,10 +214,7 @@ export function CreateSpaceDialog({ open, onOpenChange }: CreateSpaceDialogProps
                           key={category.value}
                           value={category.value}
                           onSelect={(currentValue) => {
-                            setFormData(prev => ({
-                              ...prev,
-                              category: currentValue === formData.category ? "" : currentValue,
-                            }));
+                            setSelectedCategory(currentValue === selectedCategory ? "" : currentValue);
                             setCategoryOpen(false);
                           }}
                         >
@@ -194,7 +222,7 @@ export function CreateSpaceDialog({ open, onOpenChange }: CreateSpaceDialogProps
                           <Check
                             className={cn(
                               "ml-auto h-4 w-4",
-                              formData.category === category.value ? "opacity-100" : "opacity-0"
+                              selectedCategory === category.value ? "opacity-100" : "opacity-0"
                             )}
                           />
                         </CommandItem>
@@ -224,4 +252,5 @@ export function CreateSpaceDialog({ open, onOpenChange }: CreateSpaceDialogProps
     </Dialog>
   );
 }
+
 
