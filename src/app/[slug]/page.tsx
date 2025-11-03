@@ -166,12 +166,7 @@ export default function PublicTestimonialPage({ params }: { params: Promise<{ sl
 
         {/* Testimonial Form Card */}
         <div className="bg-card bg-white text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] flex-1 min-h-0">
-          <div className="px-5 border-b pb-4 flex-shrink-0">
-            <h2 className="text-lg font-semibold leading-none mb-2">Your Feedback</h2>
-            <p className="text-muted-foreground text-sm">
-              All fields are required to submit your feedback.
-            </p>
-          </div>
+          
 
           <div className="px-6 flex-1 flex flex-col min-h-0 overflow-hidden">
             <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0 space-y-3">
