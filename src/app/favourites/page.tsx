@@ -4,6 +4,8 @@ import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/ui/topbar";
 import { Star, Archive, MessageCircle, List, Grid } from "lucide-react";
 import { useState } from "react";
+import axios from "axios";
+import { useEffect } from "react";
 
 // Mock data - replace with actual API calls
 const mockFavoriteTestimonials = [
@@ -33,10 +35,78 @@ const mockFavoriteTestimonials = [
   },
 ];
 
+interface campaigns {
+  id: string;
+  title: string;
+  description: string;
+  shareLink: string;
+  userId: string;
+  createdAt: string;
+  testimonials: Testimonial[];
+}
+
+interface Testimonial {
+  id: string;
+  favourite: boolean;
+  archived: boolean;
+  campaignId: string;
+  name: string;
+  email: string;
+  message: string;
+  createdAt: string;
+}
+
+interface DisplayTestimonial {
+  id: string;
+  author: string;
+  email: string;
+  text: string;
+  date: string;
+  space: string;
+  favourite: boolean;
+}
+
 type ViewMode = "list" | "cards";
 
 export default function FavouritesPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("cards");
+  const [favouriteTestimonials, setFavouriteTestimonials] = useState<DisplayTestimonial[]>([]);
+
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL ;
+
+  useEffect(() => {
+    const fetchFavouriteTestimonials = async () => {
+      const response = await axios.get(`${backendUrl}/testimonials/favourite`,{
+        headers:{
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }
+      });
+
+
+
+      const campaigns: campaigns[] = response.data;
+      const flattenedTestimonials: DisplayTestimonial[] = [];
+
+
+      campaigns.forEach((campaign)=>{
+        campaign.testimonials.forEach((testimonials)=>{
+          flattenedTestimonials.push({
+            id: testimonials.id,
+            author: testimonials.name,
+            email: testimonials.email,
+            text: testimonials.message,
+            date: new Date(testimonials.createdAt).toLocaleDateString(),
+            space: campaign.title,
+            favourite: testimonials.favourite,
+          });
+        })
+      })
+
+      setFavouriteTestimonials(flattenedTestimonials);
+    };
+    fetchFavouriteTestimonials();
+
+  }, [backendUrl]);
 
   return (
     <div className="flex min-h-screen bg-zinc-50 font-sans">
@@ -74,15 +144,15 @@ export default function FavouritesPage() {
               </button>
             </div>
           </div>
-          <p className="text-text-secondary">{mockFavoriteTestimonials.length} favorite testimonials</p>
+          <p className="text-text-secondary">{favouriteTestimonials.length} favorite testimonials</p>
         </div>
 
-        {mockFavoriteTestimonials.length > 0 ? (
+        {favouriteTestimonials.length > 0 ? (
           <div>
             {viewMode === "list" ? (
               <div className="rounded-lg bg-white shadow-sm border border-zinc-200">
                 <div className="divide-y divide-zinc-200">
-                  {mockFavoriteTestimonials.map((testimonial) => (
+                  {favouriteTestimonials.map((testimonial) => (
                     <div key={testimonial.id} className="p-6 hover:bg-zinc-50 transition-colors">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -90,9 +160,7 @@ export default function FavouritesPage() {
                       <div className="flex items-center gap-2">
                         <h3 className="font-medium text-text-primary">{testimonial.author}</h3>
                         <div className="flex items-center gap-1">
-                          {[...Array(testimonial.rating)].map((_, i) => (
-                            <Star key={i} className="size-4 fill-yellow-400 text-yellow-400" />
-                          ))}
+                          <Star className="size-4 fill-yellow-400 text-yellow-400" />
                         </div>
                       </div>
                       <span className="text-xs px-2 py-1 bg-violet-100 text-violet-700 rounded">
@@ -125,7 +193,7 @@ export default function FavouritesPage() {
               // Cards View - Variable heights based on content
               <div className="">
                 <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 items-start">
-                  {mockFavoriteTestimonials.map((testimonial) => (
+                  {favouriteTestimonials.map((testimonial) => (
                     <div
                       key={testimonial.id}
                       className="rounded-lg border border-zinc-200 p-6 hover:shadow-md transition-shadow bg-white flex flex-col"
@@ -147,9 +215,7 @@ export default function FavouritesPage() {
 
                       {/* Rating */}
                       <div className="flex items-center gap-1 mb-4">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star key={i} className="size-4 fill-yellow-400 text-yellow-400" />
-                        ))}
+                        <Star className="size-4 fill-yellow-400 text-yellow-400" />
                       </div>
 
                       {/* Testimonial Text - Variable height based on content */}

@@ -2,99 +2,59 @@
 
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/ui/topbar";
+import axios from "axios";
 import { Star, Archive, MessageCircle, List, Grid, Heart, Code } from "lucide-react";
-import { useState } from "react";
+import router from "next/router";
+import { useEffect, useState } from "react";
 
-// Mock data - replace with actual API calls
-const mockAllTestimonials = [
-  {
-    id: "1",
-    author: "John Smith",
-    role: "CEO, Tech Startup",
-    text: "This product changed my life! The team really delivered on their promises.",
-    date: "2024-01-16",
-    rating: 5,
-    space: "Project Alpha",
-  },
-  {
-    id: "2",
-    author: "Sarah Johnson",
-    role: "Marketing Director",
-    text: "Amazing service, highly recommend! Everything was perfect from start to finish.",
-    date: "2024-01-18",
-    rating: 5,
-    space: "Project Alpha",
-  },
-  {
-    id: "3",
-    author: "Mike Davis",
-    role: "Product Manager",
-    text: "Great experience overall. The quality exceeded my expectations.",
-    date: "2024-01-20",
-    rating: 4,
-    space: "Project Alpha",
-  },
-  {
-    id: "4",
-    author: "Emily Chen",
-    role: "Design Lead",
-    text: "Exceeded my expectations! Will definitely use again.",
-    date: "2024-01-22",
-    rating: 5,
-    space: "Project Alpha",
-  },
-  {
-    id: "5",
-    author: "Alex Brown",
-    role: "CMO, Growth Company",
-    text: "Outstanding results! The marketing campaign was a huge success.",
-    date: "2024-02-02",
-    rating: 5,
-    space: "Marketing Team",
-  },
-  {
-    id: "6",
-    author: "Jessica White",
-    role: "Brand Strategist",
-    text: "Professional team with great insights. Very satisfied!",
-    date: "2024-02-05",
-    rating: 5,
-    space: "Marketing Team",
-  },
-  {
-    id: "7",
-    author: "Robert Lee",
-    role: "Digital Marketing Manager",
-    text: "Good work, though there's room for improvement in communication.",
-    date: "2024-02-08",
-    rating: 4,
-    space: "Marketing Team",
-  },
-  {
-    id: "8",
-    author: "David Kim",
-    role: "Software Engineer",
-    text: "The beta version shows great promise. Looking forward to the full release!",
-    date: "2024-02-11",
-    rating: 4,
-    space: "Beta Testing",
-  },
-  {
-    id: "9",
-    author: "Lisa Garcia",
-    role: "QA Specialist",
-    text: "Found some bugs but overall good experience. The support team was helpful.",
-    date: "2024-02-12",
-    rating: 4,
-    space: "Beta Testing",
-  },
-];
+
 
 type ViewMode = "list" | "cards";
 
+interface TestimonialData {
+  success: boolean;
+  count: number;
+  data: [
+    {
+      id: string;
+      name: string;
+      email: string;
+      message: string;
+      favourite: boolean;
+      archived: boolean;
+      createdAt: string;
+      campaignId: string;
+      campaign: {
+        id: string;
+        title: string;
+      }
+    }
+  ]
+}
+
 export default function AllTestimonialsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("cards");
+  const [data, setData] = useState<TestimonialData>();
 
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+  useEffect(() => {
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/signin");
+      return;
+    }
+    const fetchData = async () => {
+      const res = await axios.get(`${backendUrl}/testimonials/get/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setData(res.data);
+    }
+    fetchData();
+  }, []);
   return (
     <div className="flex min-h-screen bg-zinc-50 font-sans">
       <Sidebar />
@@ -138,34 +98,34 @@ export default function AllTestimonialsPage() {
               </div>
             </div>
           </div>
-          <p className="text-text-secondary">{mockAllTestimonials.length} testimonials</p>
+          <p className="text-text-secondary">{data?.count} testimonials</p>
         </div>
 
-        {mockAllTestimonials.length > 0 ? (
+        {data?.success && data?.count && data?.count > 0 ? (
           <div>
             {viewMode === "list" ? (
               // List View
               <div className="space-y-4">
-                {mockAllTestimonials.map((testimonial) => (
+                {data?.data.map((testimonial) => (
                   <div key={testimonial.id} className="rounded-lg bg-white border border-zinc-200 p-6 hover:shadow-md transition-shadow">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-3">
                           <div className="flex items-center gap-2">
-                            <h3 className="font-medium text-text-primary">{testimonial.author}</h3>
-                            <span className="text-sm text-text-secondary">{testimonial.role}</span>
+                            <h3 className="font-medium text-text-primary">{testimonial.name}</h3>
+                            {/* <span className="text-sm text-text-secondary">{testimonial.role}</span> */}
                             <div className="flex items-center gap-1">
-                              {[...Array(testimonial.rating)].map((_, i) => (
+                              {/* {[...Array(testimonial.rating)].map((_, i) => (
                                 <Star key={i} className="size-4 fill-yellow-400 text-yellow-400" />
-                              ))}
+                              ))} */}
                             </div>
                           </div>
                           <span className="text-xs px-2 py-1 bg-zinc-100 text-zinc-600 rounded">
-                            {testimonial.space}
+                            {testimonial.campaign.title}
                           </span>
                         </div>
-                        <p className="text-text-secondary mb-3">{testimonial.text}</p>
-                        <p className="text-xs text-text-secondary">{testimonial.date}</p>
+                        <p className="text-text-secondary mb-3">{testimonial.message}</p>
+                        <p className="text-xs text-text-secondary">{testimonial.createdAt}</p>
                       </div>
                       <div className="flex items-center gap-2 ml-4">
                         <button className="p-2 hover:bg-zinc-100 rounded-lg transition-colors" title="Add to favorites">
@@ -182,38 +142,23 @@ export default function AllTestimonialsPage() {
             ) : (
               // Cards View
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {mockAllTestimonials.map((testimonial) => (
+                {data?.data.map((testimonial) => (
                   <div
                     key={testimonial.id}
                     className="rounded-lg bg-white border border-zinc-200 p-6 hover:shadow-md transition-shadow"
                   >
-                    {/* Top Row: Stars and Actions */}
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-1">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star key={i} className="size-5 fill-yellow-400 text-yellow-400" />
-                        ))}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button className="p-2 hover:bg-zinc-100 rounded-lg transition-colors" title="Add to favorites">
-                          <Heart className="size-4 text-zinc-400 hover:text-red-500" />
-                        </button>
-                        <button className="p-2 hover:bg-zinc-100 rounded-lg transition-colors" title="Archive">
-                          <Archive className="size-4 text-zinc-400 hover:text-zinc-600" />
-                        </button>
-                      </div>
-                    </div>
+                    
 
                     {/* Space Badge */}
                     <div className="mb-4">
                       <span className="text-xs px-2 py-1 bg-zinc-100 text-zinc-600 rounded">
-                        {testimonial.space}
+                        {testimonial.campaign.title}
                       </span>
                     </div>
 
                     {/* Testimonial Text */}
                     <p className="text-text-secondary mb-6 text-base leading-relaxed">
-                      "{testimonial.text}"
+                      "{testimonial.message}"
                     </p>
 
                     {/* Border */}
@@ -222,13 +167,13 @@ export default function AllTestimonialsPage() {
                     {/* Name and Role */}
                     <div>
                       <h3 className="font-semibold text-text-primary mb-1">
-                        {testimonial.author}
+                        {testimonial.name}
                       </h3>
                       <p className="text-sm text-text-secondary">
-                        {testimonial.role}
+                        {testimonial.email}
                       </p>
                       <p className="text-xs text-text-secondary mt-1">
-                        {testimonial.date}
+                        {testimonial.createdAt}
                       </p>
                     </div>
                   </div>
