@@ -7,6 +7,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import SpacesSkeletonLoader from "@/components/loader";
 
 type ViewMode = "list" | "cards";
 
@@ -101,46 +102,46 @@ export default function ArchivedPage() {
     <div className="flex min-h-screen bg-zinc-50 font-sans">
       <Sidebar />
       <Topbar>
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <Archive className="size-6 text-text-primary" />
-              <h1 className="text-2xl font-bold text-text-primary">Archived</h1>
-            </div>
-            {/* View Mode Toggle */}
-            <div className="flex items-center gap-1 p-1 bg-zinc-100 rounded-lg">
-              <button
-                onClick={() => setViewMode("list")}
-                className={`p-2 rounded transition-colors ${
-                  viewMode === "list"
-                    ? "bg-white shadow-sm text-text-primary"
-                    : "text-text-secondary hover:text-text-primary"
-                }`}
-                title="List View"
-              >
-                <List className="size-4" />
-              </button>
-              <button
-                onClick={() => setViewMode("cards")}
-                className={`p-2 rounded transition-colors ${
-                  viewMode === "cards"
-                    ? "bg-white shadow-sm text-text-primary"
-                    : "text-text-secondary hover:text-text-primary"
-                }`}
-                title="Cards View"
-              >
-                <Grid className="size-4" />
-              </button>
-            </div>
-          </div>
-          <p className="text-text-secondary">{archivedTestimonials.length} archived testimonials</p>
-        </div>
-
         {loading ? (
-          <div className="rounded-lg bg-white p-12 shadow-sm border border-zinc-200 text-center">
-            <p className="text-text-secondary">Loading archived testimonials...</p>
-          </div>
-        ) : archivedTestimonials.length > 0 ? (
+          <SpacesSkeletonLoader />
+        ) : (
+          <>
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Archive className="size-6 text-text-primary" />
+                  <h1 className="text-2xl font-bold text-text-primary">Archived</h1>
+                </div>
+                {/* View Mode Toggle */}
+                <div className="flex items-center gap-1 p-1 bg-zinc-100 rounded-lg">
+                  <button
+                    onClick={() => setViewMode("list")}
+                    className={`p-2 rounded transition-colors ${
+                      viewMode === "list"
+                        ? "bg-white shadow-sm text-text-primary"
+                        : "text-text-secondary hover:text-text-primary"
+                    }`}
+                    title="List View"
+                  >
+                    <List className="size-4" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode("cards")}
+                    className={`p-2 rounded transition-colors ${
+                      viewMode === "cards"
+                        ? "bg-white shadow-sm text-text-primary"
+                        : "text-text-secondary hover:text-text-primary"
+                    }`}
+                    title="Cards View"
+                  >
+                    <Grid className="size-4" />
+                  </button>
+                </div>
+              </div>
+              <p className="text-text-secondary">{archivedTestimonials.length} archived testimonials</p>
+            </div>
+
+            {archivedTestimonials.length > 0 ? (
           <div>
             {viewMode === "list" ? (
               <div className="space-y-4">
@@ -241,14 +242,16 @@ export default function ArchivedPage() {
               </div>
             )}
           </div>
-        ) : (
-          <div className="rounded-lg bg-white p-12 shadow-sm border border-zinc-200 text-center">
-            <Archive className="size-12 text-zinc-300 mx-auto mb-4" />
-            <p className="text-text-secondary mb-1">No archived testimonials</p>
-            <p className="text-sm text-text-secondary">
-              Archived testimonials will appear here
-            </p>
-          </div>
+            ) : (
+              <div className="rounded-lg bg-white p-12 shadow-sm border border-zinc-200 text-center">
+                <Archive className="size-12 text-zinc-300 mx-auto mb-4" />
+                <p className="text-text-secondary mb-1">No archived testimonials</p>
+                <p className="text-sm text-text-secondary">
+                  Archived testimonials will appear here
+                </p>
+              </div>
+            )}
+          </>
         )}
       </Topbar>
     </div>

@@ -8,12 +8,14 @@ import Link from "next/link";
 import { CreateSpaceDialog } from "@/components/ui/create-space-dialog";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import SpacesSkeletonLoader from "@/components/loader";
 
 
 
 export default function SpacesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [spaces, setSpaces] = useState([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const handleCopyUrl = (url: string, e: React.MouseEvent) => {
@@ -47,6 +49,8 @@ export default function SpacesPage() {
       console.log(res.data)
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchSpaces();
@@ -56,22 +60,26 @@ export default function SpacesPage() {
     <div className="flex min-h-screen bg-zinc-50 font-sans">
       <Sidebar />
       <Topbar>
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-text-primary">All Spaces</h1>
-            <p className="text-text-secondary mt-1">{spaces?.length} spaces created</p>
-          </div>
-          <button 
-            onClick={() => setIsDialogOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors"
-          >
-            <Plus className="size-4" />
-            Create New Space
-          </button>
-        </div>
+        {loading ? (
+          <SpacesSkeletonLoader />
+        ) : (
+          <>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h1 className="text-2xl font-bold text-text-primary">All Spaces</h1>
+                <p className="text-text-secondary mt-1">{spaces?.length} spaces created</p>
+              </div>
+              <button 
+                onClick={() => setIsDialogOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors"
+              >
+                <Plus className="size-4" />
+                Create New Space
+              </button>
+            </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {spaces?.map((space: any) => (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {spaces?.map((space: any) => (
             <Link
               key={space.id}
               href={`/spaces/${space.id}`}
@@ -116,20 +124,22 @@ export default function SpacesPage() {
                 </div>
               </div>
             </Link>
-          ))}
-        </div>
+              ))}
+            </div>
 
-        {spaces?.length === 0 && (
-          <div className="rounded-lg bg-white p-12 shadow-sm border border-zinc-200 text-center">
-            <p className="text-text-secondary mb-4">No spaces created yet</p>
-            <button 
-              onClick={() => setIsDialogOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors mx-auto"
-            >
-              <Plus className="size-4" />
-              Create Your First Space
-            </button>
-          </div>
+            {spaces?.length === 0 && (
+              <div className="rounded-lg bg-white p-12 shadow-sm border border-zinc-200 text-center">
+                <p className="text-text-secondary mb-4">No spaces created yet</p>
+                <button 
+                  onClick={() => setIsDialogOpen(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors mx-auto"
+                >
+                  <Plus className="size-4" />
+                  Create Your First Space
+                </button>
+              </div>
+            )}
+          </>
         )}
 
         {/* Create Space Dialog */}

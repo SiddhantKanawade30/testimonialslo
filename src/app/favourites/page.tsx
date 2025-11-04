@@ -6,6 +6,7 @@ import { Star, Archive, MessageCircle, List, Grid } from "lucide-react";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
+import SpacesSkeletonLoader from "@/components/loader";
 
 // Mock data - replace with actual API calls
 const mockFavoriteTestimonials = [
@@ -71,38 +72,42 @@ type ViewMode = "list" | "cards";
 export default function FavouritesPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("cards");
   const [favouriteTestimonials, setFavouriteTestimonials] = useState<DisplayTestimonial[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL ;
 
   useEffect(() => {
     const fetchFavouriteTestimonials = async () => {
-      const response = await axios.get(`${backendUrl}/testimonials/favourite`,{
-        headers:{
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        }
-      });
+      try {
+        const response = await axios.get(`${backendUrl}/testimonials/favourite`,{
+          headers:{
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }
+        });
 
+        const campaigns: campaigns[] = response.data;
+        const flattenedTestimonials: DisplayTestimonial[] = [];
 
-
-      const campaigns: campaigns[] = response.data;
-      const flattenedTestimonials: DisplayTestimonial[] = [];
-
-
-      campaigns.forEach((campaign)=>{
-        campaign.testimonials.forEach((testimonials)=>{
-          flattenedTestimonials.push({
-            id: testimonials.id,
-            author: testimonials.name,
-            email: testimonials.email,
-            text: testimonials.message,
-            date: new Date(testimonials.createdAt).toLocaleDateString(),
-            space: campaign.title,
-            favourite: testimonials.favourite,
-          });
+        campaigns.forEach((campaign)=>{
+          campaign.testimonials.forEach((testimonials)=>{
+            flattenedTestimonials.push({
+              id: testimonials.id,
+              author: testimonials.name,
+              email: testimonials.email,
+              text: testimonials.message,
+              date: new Date(testimonials.createdAt).toLocaleDateString(),
+              space: campaign.title,
+              favourite: testimonials.favourite,
+            });
+          })
         })
-      })
 
-      setFavouriteTestimonials(flattenedTestimonials);
+        setFavouriteTestimonials(flattenedTestimonials);
+      } catch (error) {
+        console.error("Error fetching favourite testimonials:", error);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchFavouriteTestimonials();
 
@@ -112,42 +117,46 @@ export default function FavouritesPage() {
     <div className="flex min-h-screen bg-zinc-50 font-sans">
       <Sidebar />
       <Topbar>
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <Star className="size-6 text-yellow-400 fill-yellow-400" />
-              <h1 className="text-2xl font-bold text-text-primary">Favorites</h1>
+        {loading ? (
+          <SpacesSkeletonLoader />
+        ) : (
+          <>
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Star className="size-6 text-yellow-400 fill-yellow-400" />
+                  <h1 className="text-2xl font-bold text-text-primary">Favorites</h1>
+                </div>
+                {/* View Mode Toggle */}
+                <div className="flex items-center gap-1 p-1 bg-zinc-100 rounded-lg">
+                  <button
+                    onClick={() => setViewMode("list")}
+                    className={`p-2 rounded transition-colors ${
+                      viewMode === "list"
+                        ? "bg-white shadow-sm text-text-primary"
+                        : "text-text-secondary hover:text-text-primary"
+                    }`}
+                    title="List View"
+                  >
+                    <List className="size-4" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode("cards")}
+                    className={`p-2 rounded transition-colors ${
+                      viewMode === "cards"
+                        ? "bg-white shadow-sm text-text-primary"
+                        : "text-text-secondary hover:text-text-primary"
+                    }`}
+                    title="Cards View"
+                  >
+                    <Grid className="size-4" />
+                  </button>
+                </div>
+              </div>
+              <p className="text-text-secondary">{favouriteTestimonials.length} favorite testimonials</p>
             </div>
-            {/* View Mode Toggle */}
-            <div className="flex items-center gap-1 p-1 bg-zinc-100 rounded-lg">
-              <button
-                onClick={() => setViewMode("list")}
-                className={`p-2 rounded transition-colors ${
-                  viewMode === "list"
-                    ? "bg-white shadow-sm text-text-primary"
-                    : "text-text-secondary hover:text-text-primary"
-                }`}
-                title="List View"
-              >
-                <List className="size-4" />
-              </button>
-              <button
-                onClick={() => setViewMode("cards")}
-                className={`p-2 rounded transition-colors ${
-                  viewMode === "cards"
-                    ? "bg-white shadow-sm text-text-primary"
-                    : "text-text-secondary hover:text-text-primary"
-                }`}
-                title="Cards View"
-              >
-                <Grid className="size-4" />
-              </button>
-            </div>
-          </div>
-          <p className="text-text-secondary">{favouriteTestimonials.length} favorite testimonials</p>
-        </div>
 
-        {favouriteTestimonials.length > 0 ? (
+            {favouriteTestimonials.length > 0 ? (
           <div>
             {viewMode === "list" ? (
               <div className="rounded-lg bg-white shadow-sm border border-zinc-200">
@@ -245,14 +254,16 @@ export default function FavouritesPage() {
               </div>
             )}
           </div>
-        ) : (
-          <div className="rounded-lg bg-white p-12 shadow-sm border border-zinc-200 text-center">
-            <MessageCircle className="size-12 text-zinc-300 mx-auto mb-4" />
-            <p className="text-text-secondary mb-1">No favorite testimonials yet</p>
-            <p className="text-sm text-text-secondary">
-              Star testimonials you love to save them here
-            </p>
-          </div>
+            ) : (
+              <div className="rounded-lg bg-white p-12 shadow-sm border border-zinc-200 text-center">
+                <MessageCircle className="size-12 text-zinc-300 mx-auto mb-4" />
+                <p className="text-text-secondary mb-1">No favorite testimonials yet</p>
+                <p className="text-sm text-text-secondary">
+                  Star testimonials you love to save them here
+                </p>
+              </div>
+            )}
+          </>
         )}
       </Topbar>
     </div>
