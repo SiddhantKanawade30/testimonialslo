@@ -135,8 +135,8 @@ export default function SpaceDetailPage() {
               
               <div className="flex items-start justify-between">
                 <div>
-                  <h1 className="text-2xl font-bold text-text-primary mb-2">{data?.title}</h1>
-                  <p className="text-text-secondary">{data?.description}</p>
+                  <h1 className="text-2xl font-bold text-text-primary mb-2 break-all mr-4">{data?.title}</h1>
+                  <p className="text-text-secondary line-clamp-2 break-all leading-relaxed mr-4 ">{data?.description}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <button className="flex items-center gap-2 px-4 py-2 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors">
@@ -209,18 +209,18 @@ export default function SpaceDetailPage() {
                   <div className="space-y-4">
                     {data?.testimonials?.map((testimonial: any) => (
                       <div key={testimonial.id} className="rounded-lg bg-white border border-zinc-200 p-6 hover:shadow-md transition-shadow">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <h3 className="font-medium text-text-primary">{testimonial.name}</h3>
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-2 flex-wrap">
+                              <h3 className="font-medium text-text-primary truncate">{testimonial.name}</h3>
                               {testimonial.position && (
-                                <span className="text-sm text-text-secondary">{testimonial.position}</span>
+                                <span className="text-sm text-text-secondary truncate">{testimonial.position}</span>
                               )}
                               {testimonial.email && (
-                                <span className="text-xs text-text-secondary">({testimonial.email})</span>
+                                <span className="text-xs text-text-secondary truncate">({testimonial.email})</span>
                               )}
                             </div>
-                            <p className="text-text-secondary mb-2">{testimonial.message}</p>
+                            <p className="text-text-secondary mb-2 break-words whitespace-pre-wrap">{testimonial.message}</p>
                             <p className="text-xs text-text-secondary">
                               {new Date(testimonial.createdAt).toLocaleDateString()}
                             </p>
@@ -257,10 +257,10 @@ export default function SpaceDetailPage() {
                     {data?.testimonials?.map((testimonial: any) => (
                       <div
                         key={testimonial.id}
-                        className="rounded-lg bg-white border border-zinc-200 p-6 hover:shadow-md transition-shadow"
+                        className="rounded-lg bg-white border border-zinc-200 p-6 hover:shadow-md transition-shadow flex flex-col"
                       >
                         {/* Top Row: Favorite, and Archive */}
-                        <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center justify-between mb-4 flex-shrink-0">
                           <div className="flex items-center gap-1">
                             {testimonial.favourite && (
                               <Star className="size-5 fill-yellow-400 text-yellow-400" />
@@ -291,25 +291,25 @@ export default function SpaceDetailPage() {
                         </div>
 
                         {/* Testimonial Text */}
-                        <p className="text-text-secondary mb-6 text-base leading-relaxed">
+                        <p className="text-text-secondary mb-6 text-base leading-relaxed break-words flex-1 whitespace-pre-wrap">
                           "{testimonial.message}"
                         </p>
 
                         {/* Border */}
-                        <div className="border-t border-zinc-200 mb-4"></div>
+                        <div className="border-t border-zinc-200 mb-4 flex-shrink-0"></div>
 
                         {/* Name and Position/Email */}
-                        <div>
-                          <h3 className="font-semibold text-text-primary mb-1">
+                        <div className="flex-shrink-0 min-w-0">
+                          <h3 className="font-semibold text-text-primary mb-1 truncate">
                             {testimonial.name}
                           </h3>
                           {testimonial.position && (
-                            <p className="text-sm text-text-secondary">
+                            <p className="text-sm text-text-secondary truncate">
                               {testimonial.position}
                             </p>
                           )}
                           {testimonial.email && (
-                            <p className="text-xs text-text-secondary">
+                            <p className="text-xs text-text-secondary truncate">
                               {testimonial.email}
                             </p>
                           )}

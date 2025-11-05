@@ -1,27 +1,105 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/ui/topbar";
-import { Plus, Copy } from "lucide-react";
-import Link from "next/link";
+import { Plus } from "lucide-react";
 import { CreateSpaceDialog } from "@/components/ui/create-space-dialog";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import SpacesSkeletonLoader from "@/components/loader";
+import { Toaster, toast } from "sonner";
+import { SpaceCard } from "@/components/spaces/SpaceCard";
+import { DeleteSpaceDialog } from "@/components/spaces/DeleteSpaceDialog";
 
 
+
+interface Space {
+  id: string;
+  title: string;
+  description: string;
+  shareLink: string;
+  createdAt: string;
+  _count?: {
+    testimonials: number;
+  };
+}
 
 export default function SpacesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [spaces, setSpaces] = useState([]);
+  const [spaces, setSpaces] = useState<Space[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [spaceToDelete, setSpaceToDelete] = useState<{ id: string; title: string } | null>(null);
   const router = useRouter();
 
-  const handleCopyUrl = (url: string, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click when copying URL
-    navigator.clipboard.writeText(url);
-    // You can add a toast notification here
+  const handleDeleteClick = (space: Space, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSpaceToDelete({ id: space.id, title: space.title });
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!spaceToDelete) return;
+
+    const token = localStorage.getItem("token");
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+    if (!token || !backendUrl) {
+      toast.error("Authentication error. Please try again.");
+      return;
+    }
+
+    try {
+      const res = await axios.delete(`${backendUrl}/campaigns/delete`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        data: {
+          campaignId: spaceToDelete.id,
+        },
+      });
+
+      if (res.status === 200) {
+        toast.success("Space deleted successfully");
+        setDeleteDialogOpen(false);
+        setSpaces((prevSpaces) => prevSpaces.filter((space) => space.id !== spaceToDelete.id));
+        setSpaceToDelete(null);
+      }
+    } catch (error: any) {
+      toast.error("Failed to delete space");
+    }
+  };
+
+  const handleSpaceCreated = (newSpace: any) => {
+ 
+    if (!newSpace || !newSpace.id) {
+      return;
+    }
+
+    // Ensure the new space has the correct structure
+    const spaceToAdd: Space = {
+      id: newSpace.id,
+      title: newSpace.title,
+      description: newSpace.description,
+      shareLink: newSpace.shareLink,
+      createdAt: newSpace.createdAt,
+      _count: newSpace._count || { testimonials: 0 }
+    };
+    
+    console.log("Adding space to list:", spaceToAdd);
+    
+    // Add the new space to the beginning of the array
+    setSpaces((prevSpaces) => {
+      // Check if space already exists to avoid duplicates
+      const exists = prevSpaces.some(space => space.id === spaceToAdd.id);
+      if (exists) {
+        console.warn("Space already exists in list, skipping add");
+        return prevSpaces;
+      }
+      return [spaceToAdd, ...prevSpaces];
+    });
   };
 
   useEffect(()=>{
@@ -58,6 +136,7 @@ export default function SpacesPage() {
 
   return (
     <div className="flex min-h-screen bg-zinc-50 font-sans">
+      <Toaster position="bottom-right" />
       <Sidebar />
       <Topbar>
         {loading ? (
@@ -79,51 +158,12 @@ export default function SpacesPage() {
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {spaces?.map((space: any) => (
-            <Link
-              key={space.id}
-              href={`/spaces/${space.id}`}
-              className="rounded-lg bg-white p-5 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] transition-shadow cursor-pointer"
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-text-primary mb-1">{space.title as string}</h3>
-                  <p className="text-sm text-text-secondary">{space.description}</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4 mb-4 text-sm">
-                <div>
-                  <span className="text-text-secondary">Testimonials: </span>
-                  {/* <span className="font-medium text-text-primary">{space.testimonialsCount}</span> */}
-                </div>
-                
-              </div>
-
-              <div className="space-y-2">
-                <div 
-                  className="flex items-center gap-2 p-2 bg-zinc-50 rounded border border-zinc-200"
-                  onClick={(e) => handleCopyUrl(space.shareLink, e)}
-                >
-                  <input
-                    type="text"
-                    value={space.shareLink}
-                    readOnly
-                    className="flex-1 text-xs bg-transparent border-none outline-none text-text-secondary cursor-text"
-                  />
-                  <button
-                    onClick={(e) => handleCopyUrl(space.shareLink, e)}
-                    className="p-1 hover:bg-zinc-200 rounded transition-colors"
-                    title="Copy URL"
-                  >
-                    <Copy className="size-4 text-text-secondary" />
-                  </button>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-text-secondary">
-                  <span>Created: {space.createdAt}</span>
-                </div>
-              </div>
-            </Link>
+              {spaces?.map((space) => (
+                <SpaceCard
+                  key={space.id}
+                  space={space}
+                  onDeleteClick={handleDeleteClick}
+                />
               ))}
             </div>
 
@@ -143,7 +183,24 @@ export default function SpacesPage() {
         )}
 
         {/* Create Space Dialog */}
-        <CreateSpaceDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} /> 
+        <CreateSpaceDialog 
+          open={isDialogOpen} 
+          onOpenChange={setIsDialogOpen}
+          onSpaceCreated={handleSpaceCreated}
+        /> 
+
+        {/* Delete Confirmation Dialog */}
+        <DeleteSpaceDialog
+          open={deleteDialogOpen}
+          onOpenChange={(open) => {
+            setDeleteDialogOpen(open);
+            if (!open) {
+              setSpaceToDelete(null);
+            }
+          }}
+          spaceTitle={spaceToDelete?.title}
+          onConfirm={handleDeleteConfirm}
+        />
       </Topbar>
     </div>
   );

@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/popover";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-
+import { toast } from "sonner";
 const categories = [
   {
     value: "project",
@@ -53,9 +53,10 @@ const categories = [
 interface CreateSpaceDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSpaceCreated?: (space: any) => void;
 }
 
-export function CreateSpaceDialog({ open, onOpenChange }: CreateSpaceDialogProps) {
+export function CreateSpaceDialog({ open, onOpenChange, onSpaceCreated }: CreateSpaceDialogProps) {
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -105,9 +106,25 @@ export function CreateSpaceDialog({ open, onOpenChange }: CreateSpaceDialogProps
       );
 
       if (res.status === 200 || res.status === 201) {
-        alert("Space created successfully");
+        // Backend returns { result }, so we extract the result
+        const createdSpace = res.data?.result || res.data?.newCampaign || res.data;
+        
+        console.log("Full response data:", res.data);
+        console.log("Extracted created space:", createdSpace);
+        
+        // Call the callback with the created space if provided
+        if (onSpaceCreated && createdSpace) {
+          console.log("Calling onSpaceCreated with:", createdSpace);
+          onSpaceCreated(createdSpace);
+        } else {
+          console.warn("No space data in response or callback not provided:", {
+            hasCallback: !!onSpaceCreated,
+            responseData: res.data
+          });
+        }
+        
+        toast.success("Space created successfully");
         handleCancel();
-        window.location.reload();
       } else {
         alert("Failed to create space");
       }

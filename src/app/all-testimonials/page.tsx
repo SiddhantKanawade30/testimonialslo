@@ -120,26 +120,26 @@ export default function AllTestimonialsPage() {
               <div className="space-y-4">
                 {data?.data.map((testimonial) => (
                   <div key={testimonial.id} className="rounded-lg bg-white border border-zinc-200 p-6 hover:shadow-md transition-shadow">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-medium text-text-primary">{testimonial.name}</h3>
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 mb-3 flex-wrap">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <h3 className="font-medium text-text-primary truncate">{testimonial.name}</h3>
                             {/* <span className="text-sm text-text-secondary">{testimonial.role}</span> */}
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-1 flex-shrink-0">
                               {/* {[...Array(testimonial.rating)].map((_, i) => (
                                 <Star key={i} className="size-4 fill-yellow-400 text-yellow-400" />
                               ))} */}
                             </div>
                           </div>
-                          <span className="text-xs px-2 py-1 bg-zinc-100 text-zinc-600 rounded">
+                          <span className="text-xs px-2 py-1 bg-zinc-100 text-zinc-600 rounded truncate max-w-[200px]">
                             {testimonial.campaign.title}
                           </span>
                         </div>
-                        <p className="text-text-secondary mb-3">{testimonial.message}</p>
+                        <p className="text-text-secondary mb-3 break-words whitespace-pre-wrap">{testimonial.message}</p>
                         <p className="text-xs text-text-secondary">{testimonial.createdAt}</p>
                       </div>
-                      <div className="flex items-center gap-2 ml-4">
+                      <div className="flex items-center gap-2 ml-4 flex-shrink-0">
                         <button className="p-2 hover:bg-zinc-100 rounded-lg transition-colors" title="Add to favorites">
                           <Heart className="size-4 text-zinc-400 hover:text-red-500" />
                         </button>
@@ -157,31 +157,31 @@ export default function AllTestimonialsPage() {
                 {data?.data.map((testimonial) => (
                   <div
                     key={testimonial.id}
-                    className="rounded-lg bg-white border border-zinc-200 p-6 hover:shadow-md transition-shadow"
+                    className="rounded-lg bg-white border border-zinc-200 p-6 hover:shadow-md transition-shadow flex flex-col"
                   >
                     
 
                     {/* Space Badge */}
-                    <div className="mb-4">
-                      <span className="text-xs px-2 py-1 bg-zinc-100 text-zinc-600 rounded">
+                    <div className="mb-4 flex-shrink-0">
+                      <span className="text-xs px-2 py-1 bg-zinc-100 text-zinc-600 rounded truncate max-w-[150px] inline-block">
                         {testimonial.campaign.title}
                       </span>
                     </div>
 
                     {/* Testimonial Text */}
-                    <p className="text-text-secondary mb-6 text-base leading-relaxed">
+                    <p className="text-text-secondary mb-6 text-base leading-relaxed break-words flex-1 whitespace-pre-wrap">
                       "{testimonial.message}"
                     </p>
 
                     {/* Border */}
-                    <div className="border-t border-zinc-200 mb-4"></div>
+                    <div className="border-t border-zinc-200 mb-4 flex-shrink-0"></div>
 
                     {/* Name and Role */}
-                    <div>
-                      <h3 className="font-semibold text-text-primary mb-1">
+                    <div className="flex-shrink-0 min-w-0">
+                      <h3 className="font-semibold text-text-primary mb-1 truncate">
                         {testimonial.name}
                       </h3>
-                      <p className="text-sm text-text-secondary">
+                      <p className="text-sm text-text-secondary truncate">
                         {testimonial.email}
                       </p>
                       <p className="text-xs text-text-secondary mt-1">

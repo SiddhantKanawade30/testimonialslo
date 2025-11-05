@@ -163,21 +163,21 @@ export default function FavouritesPage() {
                 <div className="divide-y divide-zinc-200">
                   {favouriteTestimonials.map((testimonial) => (
                     <div key={testimonial.id} className="p-6 hover:bg-zinc-50 transition-colors">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-medium text-text-primary">{testimonial.author}</h3>
-                        <div className="flex items-center gap-1">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-3 flex-wrap">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <h3 className="font-medium text-text-primary truncate">{testimonial.author}</h3>
+                        <div className="flex items-center gap-1 flex-shrink-0">
                           <Star className="size-4 fill-yellow-400 text-yellow-400" />
                         </div>
                       </div>
-                      <span className="text-xs px-2 py-1 bg-violet-100 text-violet-700 rounded">
+                      <span className="text-xs px-2 py-1 bg-violet-100 text-violet-700 rounded truncate max-w-[200px]">
                         {testimonial.space}
                       </span>
                     </div>
-                    <p className="text-text-secondary mb-3">{testimonial.text}</p>
-                    <div className="flex items-center gap-4 text-xs text-text-secondary">
+                    <p className="text-text-secondary mb-3 break-words whitespace-pre-wrap">{testimonial.text}</p>
+                    <div className="flex items-center gap-4 text-xs text-text-secondary flex-wrap">
                       <span>{testimonial.date}</span>
                       <div className="flex items-center gap-1">
                         <Star className="size-3 fill-yellow-400 text-yellow-400" />
@@ -208,11 +208,11 @@ export default function FavouritesPage() {
                       className="rounded-lg border border-zinc-200 p-6 hover:shadow-md transition-shadow bg-white flex flex-col"
                     >
                       {/* Top Row: Space badge and Actions */}
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="text-xs px-2 py-1 bg-violet-100 text-violet-700 rounded">
+                      <div className="flex items-center justify-between mb-4 flex-shrink-0">
+                        <span className="text-xs px-2 py-1 bg-violet-100 text-violet-700 rounded truncate max-w-[150px]">
                           {testimonial.space}
                         </span>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-shrink-0">
                           <button className="p-2 hover:bg-zinc-100 rounded-lg transition-colors" title="Unfavorite">
                             <Star className="size-4 fill-yellow-400 text-yellow-400" />
                           </button>
@@ -223,24 +223,24 @@ export default function FavouritesPage() {
                       </div>
 
                       {/* Rating */}
-                      <div className="flex items-center gap-1 mb-4">
+                      <div className="flex items-center gap-1 mb-4 flex-shrink-0">
                         <Star className="size-4 fill-yellow-400 text-yellow-400" />
                       </div>
 
                       {/* Testimonial Text - Variable height based on content */}
-                      <p className="text-text-secondary mb-4 text-base leading-relaxed flex-1">
+                      <p className="text-text-secondary mb-4 text-base leading-relaxed flex-1 break-words whitespace-pre-wrap">
                         {testimonial.text}
                       </p>
 
                       {/* Border */}
-                      <div className="border-t border-zinc-200 mb-4"></div>
+                      <div className="border-t border-zinc-200 mb-4 flex-shrink-0"></div>
 
                       {/* Author and Date */}
-                      <div className="mt-auto">
-                        <h3 className="font-semibold text-text-primary mb-1">
+                      <div className="mt-auto flex-shrink-0 min-w-0">
+                        <h3 className="font-semibold text-text-primary mb-1 truncate">
                           {testimonial.author}
                         </h3>
-                        <div className="flex items-center gap-4 text-xs text-text-secondary">
+                        <div className="flex items-center gap-4 text-xs text-text-secondary flex-wrap">
                           <span>{testimonial.date}</span>
                           <div className="flex items-center gap-1">
                             <Star className="size-3 fill-yellow-400 text-yellow-400" />
