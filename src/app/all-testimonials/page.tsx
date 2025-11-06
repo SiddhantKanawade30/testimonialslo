@@ -6,7 +6,7 @@ import axios from "axios";
 import { Star, Archive, MessageCircle, List, Grid, Heart, Code } from "lucide-react";
 import router from "next/router";
 import { useEffect, useState } from "react";
-import SpacesSkeletonLoader from "@/components/loader";
+import SpacesSkeletonLoader from "@/components/loaders/loader";
 
 
 
@@ -132,7 +132,7 @@ export default function AllTestimonialsPage() {
                               ))} */}
                             </div>
                           </div>
-                          <span className="text-xs px-2 py-1 bg-zinc-100 text-zinc-600 rounded truncate max-w-[200px]">
+                          <span className="text-xs px-2 bg-violet-100 text-violet-700 py-1  rounded truncate max-w-[200px]">
                             {testimonial.campaign.title}
                           </span>
                         </div>
@@ -163,7 +163,7 @@ export default function AllTestimonialsPage() {
 
                     {/* Space Badge */}
                     <div className="mb-4 flex-shrink-0">
-                      <span className="text-xs px-2 py-1 bg-zinc-100 text-zinc-600 rounded truncate max-w-[150px] inline-block">
+                      <span className="text-xs px-2 bg-violet-100 text-violet-700 py-1  rounded truncate max-w-[150px] inline-block">
                         {testimonial.campaign.title}
                       </span>
                     </div>

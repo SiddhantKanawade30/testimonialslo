@@ -7,7 +7,7 @@ import { Plus } from "lucide-react";
 import { CreateSpaceDialog } from "@/components/ui/create-space-dialog";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import SpacesSkeletonLoader from "@/components/loader";
+import SpacesSkeletonLoader from "@/components/loaders/loader";
 import { Toaster, toast } from "sonner";
 import { SpaceCard } from "@/components/spaces/SpaceCard";
 import { DeleteSpaceDialog } from "@/components/spaces/DeleteSpaceDialog";

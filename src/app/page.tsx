@@ -3,11 +3,12 @@
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/ui/topbar";
 import { Star, Archive } from "lucide-react";
-import { ValueLineBarChart } from "@/components/ui/value-line-bar-chart";
 import { MessageCircleMore, Airplay, Box } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { DottedLineChart } from "@/components/ui/dotted-line";
+import DashboardSkeleton from "@/components/loaders/DashboardSkeleton";
 
 
 
@@ -68,24 +69,18 @@ interface Testimonials {
 
 
 // Chart data showing testimonials gathered over months
-const testimonialsChartData = [
-  { month: "Jan", desktop: 12 },
-  { month: "Feb", desktop: 18 },
-  { month: "Mar", desktop: 15 },
-  { month: "Apr", desktop: 22 },
-  { month: "May", desktop: 19 },
-  { month: "Jun", desktop: 24 },
-];
+
 
 export default function Home() {
   const router = useRouter();
   const [data, setData] = useState<data>();
-
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/signin");
+      return;
     }
 
     const backenUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -99,18 +94,29 @@ export default function Home() {
         })
 
         setData(response.data)
-
       } catch (e) {
         console.log(e)
+      } finally {
+        setLoading(false);
       }
     }
 
     fetchData();
-
-  }, []);
-
+  }, [router]);
 
 
+
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen bg-gray-100 font-sans">
+        <Sidebar />
+        <Topbar>
+          <DashboardSkeleton />
+        </Topbar>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-100 font-sans">
@@ -160,7 +166,7 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-[40%_1fr] gap-6 mb-8">
           {/* Graph - Left Side */}
           <div>
-            <ValueLineBarChart />
+            <DottedLineChart testimonials={data?.sortTestimonial || []} />
           </div>
 
           {/* Best Testimonials List - Right Side */}

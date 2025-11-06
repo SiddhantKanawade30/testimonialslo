@@ -6,7 +6,7 @@ import { Star, Archive, MessageCircle, List, Grid } from "lucide-react";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
-import SpacesSkeletonLoader from "@/components/loader";
+import SpacesSkeletonLoader from "@/components/loaders/loader";
 
 // Mock data - replace with actual API calls
 const mockFavoriteTestimonials = [

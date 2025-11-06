@@ -7,7 +7,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import SpacesSkeletonLoader from "@/components/loader";
+import SpacesSkeletonLoader from "@/components/loaders/loader";
 
 type ViewMode = "list" | "cards";
 
