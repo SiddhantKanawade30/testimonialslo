@@ -3,6 +3,7 @@
 import React, { useState, useEffect, use } from "react";
 import { MessageSquare, CheckCircle2, Star, User, Mail, Briefcase } from "lucide-react";
 import axios from "axios";
+import { StarRating } from "@/components/ui/starRating";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -24,7 +25,8 @@ export default function PublicTestimonialPage({ params }: { params: Promise<{ sl
     name: "",
     email: "",
     position: "",
-    message: ""
+    message: "",
+    rating: 0
   });
 
   useEffect(() => {
@@ -53,19 +55,31 @@ export default function PublicTestimonialPage({ params }: { params: Promise<{ sl
     
     if (!campaign) return;
 
+    // Validate rating
+    if (!formData.rating || formData.rating === 0) {
+      alert("Please select a rating (1-5 stars) before submitting.");
+      return;
+    }
+
     setSubmitting(true);
     
     try {
+      // Ensure rating is a number
+      const rating = Number(formData.rating);
+      
+      console.log("Submitting testimonial with rating:", rating);
+      
       await axios.post(`${BACKEND_URL}/testimonials/create`, {
         name: formData.name,
         email: formData.email,
         position: formData.position,
         message: formData.message,
+        rating: rating,
         campaignId: campaign.id
       });
 
       setSubmitted(true);
-      setFormData({ name: "", email: "", position: "", message: "" });
+      setFormData({ name: "", email: "", position: "", message: "", rating: 0 });
     } catch (error) {
       console.log("Error submitting testimonial:", error);
       alert("Failed to submit testimonial. Please try again.");
@@ -255,6 +269,13 @@ export default function PublicTestimonialPage({ params }: { params: Promise<{ sl
                   <MessageSquare className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
                 </div>
               </div>
+
+              {/* Star Rating */}
+              <StarRating
+                value={formData.rating}
+                onChange={(rating) => setFormData({ ...formData, rating })}
+                required
+              />
 
               {/* Submit Button */}
               <div className="flex-shrink-0 pt-1">

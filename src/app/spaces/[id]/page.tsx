@@ -32,7 +32,14 @@ export default function SpaceDetailPage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   
+
+
+  
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   useEffect(() => {
+    
+  const token = localStorage.getItem("token");
     const fetchSpace = async () => {
       const token = localStorage.getItem("token");
 
@@ -42,7 +49,6 @@ export default function SpaceDetailPage() {
         return;
       }
 
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
       if (!backendUrl) {
         console.log("No backend URL found");
@@ -70,16 +76,38 @@ export default function SpaceDetailPage() {
     fetchSpace();
   }, [id]);
 
-  const toggleFavorite = (testimonialId: string) => {
+  const toggleFavorite = async(testimonialId: string) => {
+
+    const token = localStorage.getItem("token");
+
+    const fav = async () =>{
+      const res = await axios.put(`${backendUrl}/testimonials/favourite`,{testimonialId},{
+        headers:{
+          "Authorization": `bearer ${token}`
+        }
+      });
+    }
+
+    const unFav = async() =>{
+      await axios.put(`${backendUrl}/testimonials/remove-favorite`,{testimonialId},{
+        headers:{
+          "Authorization" : `bearer ${token}`
+        }
+      })
+    }
+
+
     setFavorites(prev => {
       const newFavorites = new Set(prev);
       const testimonial = data?.testimonials?.find((t: any) => t.id === testimonialId);
       if (newFavorites.has(testimonialId)) {
         newFavorites.delete(testimonialId);
         toast.info("Removed from favorites");
+        unFav();
       } else {
         newFavorites.add(testimonialId);
         toast.success("Added to favorites");
+        fav();
       }
       return newFavorites;
     });
@@ -260,13 +288,37 @@ export default function SpaceDetailPage() {
                         className="rounded-lg bg-white border border-zinc-200 p-6 hover:shadow-md transition-shadow flex flex-col"
                       >
                         {/* Top Row: Favorite, and Archive */}
-                        <div className="flex items-center justify-between mb-4 flex-shrink-0">
-                          <div className="flex items-center gap-1">
-                            {testimonial.favourite && (
-                              <Star className="size-5 fill-yellow-400 text-yellow-400" />
-                            )}
+                        
+
+                        {/* Testimonial Text */}
+                        <p className="text-text-secondary mb-6 text-base leading-relaxed break-words flex-1 whitespace-pre-wrap">
+                          "{testimonial.message}"
+                        </p>
+
+                        {/* Border */}
+                        <div className="border-t border-zinc-200 mb-4 flex-shrink-0"></div>
+
+                        {/* Name and Position/Email */}
+                        <div className="flex-shrink-0 flex items-center justify-between  min-w-0">
+                          <div>
+                          <h3 className="font-semibold text-text-primary mb-1 truncate">
+                            {testimonial.name}
+                          </h3>
+                          {testimonial.position && (
+                            <p className="text-sm text-text-secondary truncate">
+                              {testimonial.position}
+                            </p>
+                          )}
+                          {testimonial.email && (
+                            <p className="text-xs text-text-secondary truncate">
+                              {testimonial.email}
+                            </p>
+                          )}
                           </div>
-                          <div className="flex items-center gap-2">
+
+                          <div className="flex items-center justify-between mb-4 flex-shrink-0">
+                          
+                          <div className="flex items-center gap-1">
                             <button 
                               onClick={() => toggleFavorite(testimonial.id)}
                               className="p-2 hover:bg-zinc-100 rounded-lg transition-colors"
@@ -274,7 +326,7 @@ export default function SpaceDetailPage() {
                             >
                               <Heart 
                                 className={`size-4 transition-colors ${
-                                  favorites.has(testimonial.id)
+                                  testimonial.favourite === true
                                     ? "fill-red-500 text-red-500"
                                     : "text-zinc-400 hover:text-red-500"
                                 }`} 
@@ -289,30 +341,6 @@ export default function SpaceDetailPage() {
                             </button>
                           </div>
                         </div>
-
-                        {/* Testimonial Text */}
-                        <p className="text-text-secondary mb-6 text-base leading-relaxed break-words flex-1 whitespace-pre-wrap">
-                          "{testimonial.message}"
-                        </p>
-
-                        {/* Border */}
-                        <div className="border-t border-zinc-200 mb-4 flex-shrink-0"></div>
-
-                        {/* Name and Position/Email */}
-                        <div className="flex-shrink-0 min-w-0">
-                          <h3 className="font-semibold text-text-primary mb-1 truncate">
-                            {testimonial.name}
-                          </h3>
-                          {testimonial.position && (
-                            <p className="text-sm text-text-secondary truncate">
-                              {testimonial.position}
-                            </p>
-                          )}
-                          {testimonial.email && (
-                            <p className="text-xs text-text-secondary truncate">
-                              {testimonial.email}
-                            </p>
-                          )}
                         </div>
                       </div>
                     ))}
