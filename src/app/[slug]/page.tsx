@@ -4,7 +4,7 @@ import React, { useState, useEffect, use } from "react";
 import { MessageSquare, CheckCircle2, Star, User, Mail, Briefcase, Video } from "lucide-react";
 import axios from "axios";
 import { StarRating } from "@/components/ui/starRating";
-import { VideoSpace }  from "./video";
+import { VideoSpace }  from "./videoTestimonial";
 import { Footer, HeaderSection, Loader, NotCampaign, SubmitedForm, ToggleButton } from "./utils";
 import { TextTestimonial } from "./textTestimonial";
 

@@ -1,92 +1,97 @@
-"use client"
-import { useRef, useState } from "react"
 
-export const VideoTestimonial =() => {
+import { Video, User, Mail, Briefcase } from "lucide-react";
+import { StarRating } from "@/components/ui/starRating";
+import { InputStyle } from "./utils";
+import { VideoLogic } from "./video";
 
-  const [recording, setRecording] = useState(false);
-  const [blob, setBlob] = useState<Blob | null>(null);
-  const recorderRef = useRef<MediaRecorder | null>(null);
-  
-  const startRecording = async() =>{
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video:true,
-      audio:true,
-    })
-     
-    const recorder = new MediaRecorder(stream);
-    recorderRef.current = recorder;
+export const VideoSpace = ({formData, setFormData , handleChange}:{formData: any, setFormData: any, handleChange:any}) => {
 
-    const chunks:BlobPart[] = [];
+    return (
 
-    recorder.ondataavailable = (event: BlobEvent) =>{
-      chunks.push(event.data)
-    }
-
-    recorder.onstop = () => {
-      const videoBlob = new Blob(chunks,{type:"video/webm"})
-
-      setBlob(videoBlob)
-    }
-
-    recorder.start();
-    setRecording(true)
-  }
+    <div>
+                  {/* Large Video Recording Area */}
+                  <div className="space-y-1.5 flex-shrink-0">
+                    <label className="flex items-center gap-1.5 text-sm font-medium">
+                      <Video className="h-4 w-4 text-muted-foreground" />
+                      Record Video Testimonial *
+                    </label>
+                    <div className="w-full h-[350px] flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
+                      <VideoLogic />
+                    </div>
+                  </div>
 
 
+                <div className="py-5">
+                  {/* Name */}
+                  <div className="space-y-1.5 flex-shrink-0 py-3">
+                    <label htmlFor="name" className="flex items-center gap-1.5 text-sm font-medium">
+                      <User className="h-4 w-4 text-muted-foreground" />
+                      Your Name *
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        required
+                        value={formData.name}
+                        onChange={handleChange}
+                        className={InputStyle}
+                        placeholder="Full name"
+                      />
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                    </div>
+                  </div>
 
-  const stopRecording = async() =>{
-    recorderRef.current?.stop();
+                  {/* Email */}
+                  <div className="space-y-1.5 flex-shrink-0 py-3">
+                    <label htmlFor="email" className="flex items-center gap-1.5 text-sm font-medium">
+                      <Mail className="h-4 w-4 text-muted-foreground" />
+                      Email Address *
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        required
+                        value={formData.email}
+                        onChange={handleChange}
+                        className={InputStyle}
+                        placeholder="your@email.com"
+                      />
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                    </div>
+                  </div>
 
-    setRecording(false);
-  }
+                  {/* Position */}
+                  <div className="space-y-1.5 flex-shrink-0 py-3">
+                    <label htmlFor="position" className="flex items-center gap-1.5 text-sm font-medium">
+                      <Briefcase className="h-4 w-4 text-muted-foreground" />
+                      Your Position * <span> <p className="text-xs text-muted-foreground">( Enter your job title and company )</p></span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="position"
+                        name="position"
+                        type="text"
+                        required
+                        value={formData.position}
+                        onChange={handleChange}
+                        className={InputStyle}
+                        placeholder="e.g., CEO at Apple"
+                      />
+                      <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                    </div>
+                  </div>
 
-
-
-  return (
-    <div className="flex flex-col items-center gap-4 p-4">
-      
-      {/* Live camera stream preview */}
-      <video
-        ref={(video) => {
-          // attach stream to video element when recording starts
-          if (video && recorderRef.current && recorderRef.current.stream) {
-            video.srcObject = recorderRef.current.stream;
-          }
-        }}
-        autoPlay
-        muted
-        className="w-64 h-48 bg-black"
-      ></video>
-  
-      {/* Start / Stop recording buttons */}
-      {!recording ? (
-        <button
-          onClick={startRecording}
-          className="px-4 py-2 bg-green-600 text-white rounded"
-        >
-          Start Recording
-        </button>
-      ) : (
-        <button
-          onClick={stopRecording}
-          className="px-4 py-2 bg-red-600 text-white rounded"
-        >
-          Stop Recording
-        </button>
-      )}
-  
-      {/* Show preview after recording stops */}
-      {blob && (
-        <div className="mt-4">
-          <p className="text-lg font-semibold mb-2">Preview:</p>
-          <video
-            src={URL.createObjectURL(blob)}
-            controls
-            className="w-64 h-48 bg-gray-200"
-          />
-        </div>
-      )}
-    </div>
-  );
-  
+                  {/* Star Rating */}
+                  <StarRating
+                    value={formData.rating}
+                    onChange={(rating) => setFormData({ ...formData, rating })}
+                    required
+                  />
+                  </div>
+                </div>
+    )
 }
