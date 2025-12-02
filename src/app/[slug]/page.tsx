@@ -173,9 +173,9 @@ export default function PublicTestimonialPage({ params }: { params: Promise<{ sl
             </div>
           </div>
           
-          <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+          {/* <p className="text-sm text-muted-foreground max-w-xl mx-auto">
             {campaign.description || "We value your feedback. Please share your experience."}
-          </p>
+          </p> */}
         </div>
 
         {/* Testimonial Form Card */}
@@ -205,7 +205,7 @@ export default function PublicTestimonialPage({ params }: { params: Promise<{ sl
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                   </div>
                 </div>
-
+            
                 {/* Email */}
                 <div className="space-y-1.5">
                   <label htmlFor="email" className="flex items-center gap-1.5 text-sm font-medium">
