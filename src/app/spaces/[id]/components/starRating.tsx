@@ -16,9 +16,6 @@ export function StarRating({value, onChange, required = false }: StarRatingProps
 
   return (
     <div className="flex items-center gap-3 pt-3">
-      <label className="text-sm font-medium">
-        Rate the product {required && "*"}
-      </label>
       <div className="flex items-center gap-1">
         {[1, 2, 3, 4, 5].map((star) => {
           const isSelected = star <= value;
