@@ -6,6 +6,12 @@ import Link from "next/link";
 import { ComboboxDemo } from "./ui/combobox";
 import { useUser } from "@/context/UserContext";
 
+interface NavItem {
+  name: string;
+  href: string;
+  icon: React.ReactNode;
+}
+
 interface UserData {
   id: string;
   name: string;
