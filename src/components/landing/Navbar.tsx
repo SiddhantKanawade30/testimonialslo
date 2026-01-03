@@ -1,0 +1,59 @@
+import Link from "next/link";
+
+export default function Navbar() {
+  return (
+    <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link href={"/"}>
+          <div className="flex items-center gap-2">
+            <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <span
+                className="material-symbols-outlined"
+                style={{ fontSize: "20px" }}
+              >
+                chat_bubble
+              </span>
+            </div>
+            <span className="text-lg font-bold tracking-tight text-slate-900">
+              TestimonialFlow
+            </span>
+          </div>
+        </Link>
+        <nav className="hidden md:flex items-center gap-8">
+          <a
+            className="text-sm font-medium text-slate-600 hover:text-primary transition-colors"
+            href="#features"
+          >
+            Features
+          </a>
+          <a
+            className="text-sm font-medium text-slate-600 hover:text-primary transition-colors"
+            href="#how-it-works"
+          >
+            How it works
+          </a>
+          <a
+            className="text-sm font-medium text-slate-600 hover:text-primary transition-colors"
+            href="#pricing"
+          >
+            Pricing
+          </a>
+        </nav>
+        <div className="flex items-center gap-4">
+          <Link
+            className="hidden text-sm font-medium text-slate-600 hover:text-slate-900 sm:block"
+            href="/signin"
+          >
+            Signin
+          </Link>
+          <Link
+            href="/signup"
+            className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            Get Started
+          </Link>
+        </div>
+      </div>
+    </header>
+  );
+}

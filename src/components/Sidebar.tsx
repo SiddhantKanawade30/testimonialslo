@@ -18,7 +18,7 @@ interface SidebarProps {
 }
 
 const navItems: NavItem[] = [
-  { name: "Overview", href: "/", icon: <LayoutGrid className="size-5" /> },
+  { name: "Overview", href: "/overview", icon: <LayoutGrid className="size-5" /> },
   { name: "Spaces", href: "/spaces", icon: <Airplay className="size-5" /> },
   { name: "All Testimonials", href: "/all-testimonials", icon: <MessageCircle className="size-5" /> },
   { name: "Archived", href: "/archived", icon: <Archive className="size-5" /> },
