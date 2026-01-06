@@ -26,11 +26,25 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+         <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+          rel="stylesheet"
+        />
+         <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <UserProvider>
-            {children}
-          </UserProvider>
+        <body
+          className={`
+    ${geistSans.variable}
+    ${geistMono.variable}
+    antialiased
+  `}
+        >
+          <UserProvider>{children}</UserProvider>
         </body>
       </GoogleOAuthProvider>
     </html>

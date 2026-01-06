@@ -15,16 +15,6 @@ interface CardViewProps {
   isLoading?: boolean;
 }
 
-/**
- * CardView Component - Masonry-style layout using CSS columns
- * 
- * Features:
- * - Cards naturally size to their content (no stretching)
- * - Responsive: 1 column (mobile), 2 columns (tablet), 3 columns (desktop)
- * - Prevents column breaks inside cards
- * - Consistent spacing between cards
- * - Supports text and video testimonials
- */
 export const CardView: React.FC<CardViewProps> = ({ testimonials, isLoading }) => {
   if (isLoading) {
     return (

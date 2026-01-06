@@ -3,8 +3,10 @@ import { LayoutGrid, Settings , Airplay , MessageCircle , Heart , Gift, Archive 
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ComboboxDemo } from "./ui/combobox";
 import { useUser } from "@/context/UserContext";
+import type { UserData } from "@/context/UserContext";
 
 interface NavItem {
   name: string;
@@ -12,18 +14,12 @@ interface NavItem {
   icon: React.ReactNode;
 }
 
-interface UserData {
-  id: string;
-  name: string;
-  email: string;
-}
-
 interface SidebarProps {
   user?: UserData;
 }
 
 const navItems: NavItem[] = [
-  { name: "Overview", href: "/", icon: <LayoutGrid className="size-5" /> },
+  { name: "Overview", href: "/overview", icon: <LayoutGrid className="size-5" /> },
   { name: "Spaces", href: "/spaces", icon: <Airplay className="size-5" /> },
   { name: "All Testimonials", href: "/all-testimonials", icon: <MessageCircle className="size-5" /> },
   { name: "Archived", href: "/archived", icon: <Archive className="size-5" /> },
@@ -33,10 +29,24 @@ const navItems: NavItem[] = [
 
 export default function Sidebar({ user }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(true);
+  const pathname = usePathname();
   const { data } = useUser();
 
   // Use data from context if user prop not provided
-  const userData = user || (data?.user ? { id: data.user.id, name: data.user.name, email: data.user.email } : undefined);
+  const userData = user || data?.user;
+
+  const isActive = (href: string) => {
+    // Exact match for overview and settings
+    if ((href === "/overview" || href === "/settings") && pathname === href) {
+      return true;
+    }
+    // For spaces, check if pathname starts with /spaces (includes /spaces/[id])
+    if (href === "/spaces" && pathname.startsWith("/spaces")) {
+      return true;
+    }
+    // For other routes, exact match
+    return pathname === href;
+  };
 
   return (
     <>
@@ -73,30 +83,52 @@ export default function Sidebar({ user }: SidebarProps) {
           {/* Navigation */}
           <nav className="flex-1 overflow-y-auto py-3">
             <ul className="space-y-1">
-              {navItems.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className="flex items-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
-                  >
-                    <span className="size-5">{item.icon}</span>
-                    <span className="text-sm font-medium">{item.name}</span>
-                  </Link>
-                </li>
-              ))}
+              {navItems.map((item) => {
+                const active = isActive(item.href);
+                return (
+                  <li key={item.name}>
+                    <Link
+                      href={item.href}
+                      className={`flex items-center gap-2 rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
+                        active
+                          ? "bg-zinc-100 text-text-primary"
+                          : "text-zinc-700 hover:bg-zinc-100"
+                      }`}
+                    >
+                      <span className="size-5">{item.icon}</span>
+                      <span className="text-sm font-medium">{item.name}</span>
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </nav>
 
           {/* Footer */}
-          <div className="border items-center justify-center mb-2 p-4 bg-neutral-100 rounded-lg">
-            <div className="flex items-center gap-1 mb-2">
-              <Gift className="size-5 text-primary" />
-              <div className="text-sm font-medium">Upgrade to <span className="bg-gradient-to-b from-violet-700 to-violet-400 py-0.5 rounded-sm px-2 text-white">Premium</span></div>
-            </div>
-            <div className="text-xs text-text-secondary">Upgrade to premium to get access to more features.</div>
-            <Link href="/plans"><button className="cursor-pointer bg-primary text-white w-full px-4 py-2 rounded-md mt-4">Click here</button></Link>
-            
-          </div>
+          {userData?.plan === "FREE" ? (
+  <div className="border items-center justify-center mb-2 p-4 bg-neutral-100 rounded-lg">
+    <div className="flex items-center gap-1 mb-2">
+      <Gift className="size-5 text-primary" />
+      <div className="text-sm font-medium">Upgrade to <span className="bg-gradient-to-b from-violet-700 to-violet-400 py-0.5 rounded-sm px-2 text-white">Premium</span></div>
+    </div>
+    <div className="text-xs text-text-secondary">Upgrade to premium to get access to more features.</div>
+    <Link href="/plans"><button className="cursor-pointer bg-primary text-white w-full px-4 py-2 rounded-md mt-4">Click here</button></Link>
+  </div>
+) : (
+  <div className="relative mb-2 p-[1.2px] bg-white rounded-lg overflow-hidden">
+    <div className="absolute inset-0 animate-spin scale-[3] [background-image:conic-gradient(at_center,transparent,var(--color-violet-600)_20%,transparent_30%)] [animation-duration:4s]" ></div>
+    
+    <div className="relative items-center justify-center p-4 border-neutral-200 border-1 bg-neutral-100 rounded-lg">
+      <div className="flex items-center gap-1 mb-2">
+        <Gift className="size-5 text-violet-600" />
+        <div className="text-sm font-medium">
+          <span className="bg-gradient-to-b from-violet-700 to-violet-400 py-0.5 rounded-sm px-2 text-white">Premium</span> Plan
+        </div>
+      </div>
+      <div className="text-xs text-neutral-600">Enjoy all premium features and exclusive access.</div>
+    </div>
+  </div>
+)}
 
 
         </div>

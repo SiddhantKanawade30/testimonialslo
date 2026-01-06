@@ -4,6 +4,18 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
 
+@theme{
+  --color-primary: #197fe6;
+  --color-primary-hover: #166ecc;
+  --color-background-light: #ffffff;
+  --color-background-offset: #f6f8fa;
+  --color-background-dark: #111921;
+  --color-text-main: #111827;
+  --color-text-muted: #6b7280;
+}
+
+
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -51,6 +63,19 @@
 body {
   font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
+
+.material-symbols-outlined {
+  font-family: var(--font-material-symbols);
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  display: inline-block;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+}
+
 
 :root {
   --radius: 0.625rem;
