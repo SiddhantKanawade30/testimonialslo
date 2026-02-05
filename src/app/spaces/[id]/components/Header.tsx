@@ -40,16 +40,15 @@ export default function Header({
 
           <div>
             <button
-            onClick={onOpenImport}
-            className="flex items-center gap-2 px-4 py-2 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors"
-          >
-            <div>
-                  Import from 
-            </div>
-            <img src="/X-light.svg" alt="x icon"/>
-            <img src="/insta.svg" alt="" width={30} height={30}/>
-             
-          </button>
+              onClick={onOpenImport}
+              className="flex items-center gap-2 px-4 py-2 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors"
+            >
+              <div>
+                Import from
+              </div>
+              <img src="/X-light.svg" alt="x icon" />
+
+            </button>
           </div>
 
           <button

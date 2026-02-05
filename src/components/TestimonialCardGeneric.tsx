@@ -61,16 +61,42 @@ export const GenericTestimonialCard: React.FC<GenericTestimonialCardProps> = ({
   );
 
   const TextContent = () => (
-    <>
-      <p className={`text-text-secondary ${viewMode === "list" ? "mb-3 wrap-break-word whitespace-pre-wrap" : "mb-4 md:mb-6 text-base leading-relaxed flex-1 wrap-break-word whitespace-pre-wrap"}>`}>
-        {testimonial.content}
-      </p>
-      {testimonial.rating && testimonial.rating > 0 && (
-        <div className={viewMode === "list" ? "mb-3" : "mb-4 md:mb-6"}>
-          <StarDisplay value={testimonial.rating} />
+    <div className="flex-1">
+      {/* Testimonial content with quotes in bold dark font */}
+      <div className="mb-4 md:mb-6">
+        <p className="text-base md:text-lg font-bold text-text-primary leading-relaxed mb-4">
+          "{testimonial.content}"
+        </p>
+        
+        {/* Rating */}
+        {testimonial.rating && testimonial.rating > 0 && (
+          <div className="mb-4">
+            <StarDisplay value={testimonial.rating} />
+          </div>
+        )}
+        
+        {/* Add a line after rating */}
+        <div className="border-t border-zinc-200 mb-4"></div>
+        
+        {/* Author info */}
+        <div className="space-y-1">
+          <h3 className="font-semibold text-text-primary truncate">
+            {testimonial.name}
+          </h3>
+          {testimonial.position && (
+            <p className="text-sm text-text-secondary truncate">
+              {testimonial.position}
+            </p>
+          )}
+          {testimonial.email && (
+            <p className="text-xs text-text-secondary truncate">
+              {testimonial.email}
+            </p>
+          )}
+          <p className="text-xs text-text-secondary">{formatDate(testimonial.createdAt)}</p>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 
   // Special rendering for Twitter testimonials - just the embed
@@ -150,8 +176,8 @@ export const GenericTestimonialCard: React.FC<GenericTestimonialCardProps> = ({
   // Cards view
   return (
     <div className="rounded-lg bg-white border border-zinc-200 p-6 hover:shadow-md transition-shadow flex flex-col h-full break-inside-avoid">
-      {/* Top Row: Badges and Actions */}
-      <div className="flex items-center justify-between mb-4 flex-wrap gap-2 shrink-0">
+      {/* Top Row: Badges */}
+      <div className="flex items-start justify-between mb-4 flex-wrap gap-2 shrink-0">
         <div className="flex items-center gap-2 flex-wrap min-w-0">
           {showSpace && testimonial.space && (
             <span className="text-xs px-2 py-1 bg-violet-100 text-violet-700 rounded truncate max-w-[150px]">
@@ -165,55 +191,87 @@ export const GenericTestimonialCard: React.FC<GenericTestimonialCardProps> = ({
             </span>
           )}
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <button
-            onClick={() => onToggleFavorite(testimonial.id)}
-            className="p-2 hover:bg-zinc-100 rounded-lg transition-colors"
-            title={isFavorite ? "Remove from favorites" : "Add to favorites"}
-          >
-            <Heart
-              className={`size-4 transition-colors ${
-                isFavorite ? "fill-red-500 text-red-500" : "text-zinc-400 hover:text-red-500"
-              }`}
-            />
-          </button>
-          <button
-            onClick={() => (isArchived && onUnarchive ? onUnarchive(testimonial.id) : onArchive(testimonial.id))}
-            className="p-2 hover:bg-zinc-100 rounded-lg transition-colors"
-            title={isArchived ? "Unarchive" : "Archive"}
-          >
-            <Archive className="size-4 text-zinc-400 hover:text-zinc-600" />
-          </button>
-        </div>
       </div>
 
-      {/* Content */}
+      {/* Content based on testimonial type */}
       {testimonial.testimonialType === "VIDEO" && testimonial.playbackId ? (
-        <VideoContent />
+        <>
+          <VideoContent />
+          
+          {/* Rating for video testimonials */}
+          {testimonial.rating && testimonial.rating > 0 && (
+            <div className="mb-4">
+              <StarDisplay value={testimonial.rating} />
+            </div>
+          )}
+          
+          {/* Author info for video testimonials */}
+          <div className="space-y-1 mb-4">
+            <h3 className="font-semibold text-text-primary truncate">
+              {testimonial.name}
+            </h3>
+            {testimonial.position && (
+              <p className="text-sm text-text-secondary truncate">
+                {testimonial.position}
+              </p>
+            )}
+            {testimonial.email && (
+              <p className="text-xs text-text-secondary truncate">
+                {testimonial.email}
+              </p>
+            )}
+            <p className="text-xs text-text-secondary">{formatDate(testimonial.createdAt)}</p>
+          </div>
+          
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => onToggleFavorite(testimonial.id)}
+              className="p-2 hover:bg-zinc-100 rounded-lg transition-colors"
+              title={isFavorite ? "Remove from favorites" : "Add to favorites"}
+            >
+              <Heart
+                className={`size-4 transition-colors ${
+                  isFavorite ? "fill-red-500 text-red-500" : "text-zinc-400 hover:text-red-500"
+                }`}
+              />
+            </button>
+            <button
+              onClick={() => (isArchived && onUnarchive ? onUnarchive(testimonial.id) : onArchive(testimonial.id))}
+              className="p-2 hover:bg-zinc-100 rounded-lg transition-colors"
+              title={isArchived ? "Unarchive" : "Archive"}
+            >
+              <Archive className="size-4 text-zinc-400 hover:text-zinc-600" />
+            </button>
+          </div>
+        </>
       ) : (
-        <TextContent />
+        <>
+          <TextContent />
+          {/* Action buttons at bottom right for text testimonials */}
+          <div className="flex justify-end mt-4 shrink-0">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => onToggleFavorite(testimonial.id)}
+                className="p-2 hover:bg-zinc-100 rounded-lg transition-colors"
+                title={isFavorite ? "Remove from favorites" : "Add to favorites"}
+              >
+                <Heart
+                  className={`size-4 transition-colors ${
+                    isFavorite ? "fill-red-500 text-red-500" : "text-zinc-400 hover:text-red-500"
+                  }`}
+                />
+              </button>
+              <button
+                onClick={() => (isArchived && onUnarchive ? onUnarchive(testimonial.id) : onArchive(testimonial.id))}
+                className="p-2 hover:bg-zinc-100 rounded-lg transition-colors"
+                title={isArchived ? "Unarchive" : "Archive"}
+              >
+                <Archive className="size-4 text-zinc-400 hover:text-zinc-600" />
+              </button>
+            </div>
+          </div>
+        </>
       )}
-
-      {/* Border */}
-      <div className="border-t border-zinc-200 mb-4 shrink-0"></div>
-
-      {/* Footer */}
-      <div className="mt-auto shrink-0 min-w-0">
-        <h3 className="font-semibold text-text-primary mb-1 truncate">
-          {testimonial.name}
-        </h3>
-        {testimonial.position && (
-          <p className="text-sm text-text-secondary truncate mb-2">
-            {testimonial.position}
-          </p>
-        )}
-        {testimonial.email && (
-          <p className="text-xs text-text-secondary truncate mb-2">
-            {testimonial.email}
-          </p>
-        )}
-        <p className="text-xs text-text-secondary">{formatDate(testimonial.createdAt)}</p>
-      </div>
     </div>
   );
 };

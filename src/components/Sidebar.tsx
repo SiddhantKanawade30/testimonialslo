@@ -1,5 +1,5 @@
 "use client";
-import { LayoutGrid, Settings , Airplay , MessageCircle , Heart , Gift, Archive   } from 'lucide-react';
+import { LayoutGrid, Settings , Airplay , MessageCircle , Heart , Gift, Archive, BrickWall} from 'lucide-react';
 
 import { useState } from "react";
 import Link from "next/link";
@@ -24,7 +24,7 @@ const navItems: NavItem[] = [
   { name: "All Testimonials", href: "/all-testimonials", icon: <MessageCircle className="size-5" /> },
   { name: "Archived", href: "/archived", icon: <Archive className="size-5" /> },
   { name: "Favourites", href: "/favourites", icon: <Heart className="size-5" /> },
-  // { name: "Settings", href: "/settings", icon: <Settings /> }
+  { name: "Wall of Love", href: "/wall-of-love", icon: <BrickWall className="size-5" /> }
 ];
 
 export default function Sidebar({ user }: SidebarProps) {

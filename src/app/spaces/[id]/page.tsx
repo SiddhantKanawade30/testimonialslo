@@ -99,7 +99,6 @@ export default function SpaceDetailPage() {
       const isFavorite = prev.has(testimonialId);
       const endpoint = isFavorite ? "/testimonials/remove-favorite" : "/testimonials/favourite";
       
-      // Make API call
       axios.put(`${backendUrl}${endpoint}`, { testimonialId, campaignId: id }, {
         headers: { Authorization: `Bearer ${token}` }
       }).catch(error => {
@@ -116,7 +115,6 @@ export default function SpaceDetailPage() {
         });
       });
       
-      // Update UI optimistically
       const newFavorites = new Set(prev);
       if (isFavorite) {
         newFavorites.delete(testimonialId);
@@ -175,7 +173,6 @@ export default function SpaceDetailPage() {
           </div>
         ) : (
           <>
-            {/* Header */}
             <Header
               title={spaceData?.title}
               description={spaceData?.description}
@@ -185,7 +182,6 @@ export default function SpaceDetailPage() {
               onOpenImport={() => setImportModalOpen(true)}
             />
 
-            {/* Testimonials Section */}
             <div className="mb-6">
               <Controls viewMode={viewMode} setViewMode={setViewMode} count={testimonials.length} />
 
