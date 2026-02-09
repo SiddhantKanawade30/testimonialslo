@@ -12,13 +12,13 @@ Collect testimonials without friction. A powerful platform to gather, manage, an
 
 ## Dashboard
 
-![Dashboard](/dashboard.png)
+<img src="/dashboard.png" alt="TestimonialsLo Dashboard" width="800">
 
 A clean, intuitive dashboard to manage all your testimonials, view analytics, and organize campaigns.
 
 ## Wall of Love
 
-![Wall of Love](/wall-of-love.png)
+<img src="/wall-of-love.png" alt="TestimonialsLo Wall of Love" width="800">
 
 Create beautiful testimonial walls that showcase your customer success stories and build social proof.
 
