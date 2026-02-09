@@ -5,54 +5,33 @@ Collect testimonials without friction. A powerful platform to gather, manage, an
 ## Features
 
 - **Easy Collection**: Simple forms for customers to submit text and video testimonials
-- **Beautiful Display**: Embed testimonials on your website with customizable layouts
-- **Wall of Love**: Create stunning testimonial walls to build trust
-- **Organization**: Manage testimonials by campaigns and spaces
-- **Mobile Responsive**: Works perfectly on all devices
+- **Video Testimonials**: Upload and showcase video testimonials with Mux integration for reliable streaming and playback
+- **Social Media Import**: Import testimonials directly from X (Twitter) with one-click embedding
+- **Beautiful Display**: Embed testimonials on your website with customizable layouts and responsive design
+- **Wall of Love**: Create stunning testimonial walls to build trust and social proof
+- **Organization**: Manage testimonials by campaigns and spaces with advanced filtering
+- **Mobile Responsive**: Works perfectly on all devices with touch-friendly interface
+- **Real-time Processing**: Automatic video processing and optimization through Mux platform
 
 ## Dashboard
 
-<img src="/dashboard.png" alt="TestimonialsLo Dashboard" width="800">
+![Dashboard](./public/dashboard.png)
 
 A clean, intuitive dashboard to manage all your testimonials, view analytics, and organize campaigns.
 
+## Backend
+
+The backend API for TestimonialsLo is available at: https://github.com/SiddhantKanawade30/Testimonial-backend
+
+This repository contains the Node.js/Express backend with:
+- RESTful API endpoints for testimonials management
+- Mux video processing integration
+- X (Twitter) API integration
+- Prisma ORM for database operations
+- Authentication and authorization middleware
+
 ## Wall of Love
 
-<img src="/wall-of-love.png" alt="TestimonialsLo Wall of Love" width="800">
+![Wall of Love](./public/wall-of-love.png)
 
 Create beautiful testimonial walls that showcase your customer success stories and build social proof.
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
