@@ -1,4 +1,4 @@
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Github } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -12,8 +12,8 @@ export default function Footer() {
             </span>
           </div>
 
-          {/* Creator */}
-          <p className="text-sm text-slate-600">
+          <div className="flex items-center gap-6">
+           <p className="text-sm text-slate-600">
             Crafted with <span className="text-red-500">❤️</span> by{' '}
             <a 
               href="https://siddhantkanawade.in" 
@@ -24,6 +24,20 @@ export default function Footer() {
               Siddhant A Kanawade
             </a>
           </p>
+          </div>
+          
+           <a 
+              href="https://github.com/SiddhantKanawade30/testimonialslo" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="transition-colors hover:underline"
+            >
+              <div className="flex items-center gap-2">
+                <Github className="h-5 w-5" />
+                Github  
+              </div>
+            </a>
+            
         </div>
       </div>
     </footer>

@@ -54,7 +54,7 @@ export default function Header({
             <span className="hidden sm:inline">Embed</span>
           </button>
 
-          <Link href={`/spaces/${shareLink?.split('/').pop()}/embed`} target="_blank" rel="noopener noreferrer">
+          <Link href={`/spaces/${shareLink?.split('/').pop()}/wall-of-love`} target="_blank" rel="noopener noreferrer">
             <button
               className="flex items-center justify-center gap-2 px-3 py-2 sm:px-4 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors text-sm"
             >

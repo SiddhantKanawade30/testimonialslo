@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Github } from "lucide-react";
 
 export default function Navbar() {
   return (
@@ -14,12 +15,15 @@ export default function Navbar() {
         </Link>
        
         <div className="flex items-center gap-4">
-          <Link
-            className="hidden text-sm font-medium text-slate-600 hover:text-slate-900 sm:block"
-            href="/signin"
+          <a
+            href="https://github.com/SiddhantKanawade30/testimonialslo-backend"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden text-sm font-medium text-slate-600 hover:text-slate-900 sm:flex items-center gap-2"
           >
-            Signin
-          </Link>
+            <Github className="h-4 w-4" />
+            GitHub
+          </a>
           <Link
             href="/signup"
             className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"

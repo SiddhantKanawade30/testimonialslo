@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useParams } from "next/navigation";
@@ -97,11 +96,11 @@ export default function SpaceEmbedPage() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
+      <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-4 p-4 space-y-4">
         {data.map((t) => (
           <div
             key={t.id}
-            className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200 h-fit"
+            className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200 break-inside-avoid mb-4"
           >
             {/* Rating - Only for TEXT and VIDEO */}
             {t.testimonialType !== "TWITTER" && (

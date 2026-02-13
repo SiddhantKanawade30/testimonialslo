@@ -32,10 +32,12 @@ export default function HeroSection() {
               Create your testimonial page
             </button>
             </Link>
+            <Link href="/signin">
               <button className="inline-flex h-12 items-center justify-center rounded-lg border border-slate-200 bg-white px-8 text-base font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 hover:text-slate-900">
                 
                 Sign in    
               </button>
+              </Link>
           </div>
         </div>
       </div>

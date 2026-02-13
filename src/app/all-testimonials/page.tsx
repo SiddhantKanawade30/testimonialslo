@@ -3,7 +3,7 @@
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/ui/topbar";
 import axios from "axios";
-import { MessageCircle, List, Grid, Code } from "lucide-react";
+import { MessageCircle, Code } from "lucide-react";
 import { useEffect, useState, useCallback, useRef } from "react";
 import SpacesSkeletonLoader from "@/components/loaders/loader";
 import { Toaster, toast } from "sonner";
