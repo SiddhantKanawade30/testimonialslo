@@ -90,7 +90,7 @@ export default function Sidebar({ user }: SidebarProps) {
           </div>
 
           <div className="py-4 border-b px-1 border-zinc-200">
-            <ComboboxDemo userName={userData?.name} userEmail={userData?.email} />
+            <ComboboxDemo userName={userData?.name} userEmail={userData?.email} profileImage={userData?.profileImage} />
           </div>
 
           {/* Navigation */}

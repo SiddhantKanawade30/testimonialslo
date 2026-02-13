@@ -1,5 +1,3 @@
-import React from 'react';
-
 const SpaceDetailSkeleton = () => {
   return (
     <div className="min-h-screen bg-background-offset">

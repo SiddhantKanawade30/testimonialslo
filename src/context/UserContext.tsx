@@ -13,6 +13,7 @@ export interface UserData {
   createdAt: string;
   planExpiresAt: string | null;
   campaigns: any[];
+  profileImage?: string;
 }
 
 export interface AppData {

@@ -88,9 +88,17 @@ export default function ProfilePage() {
           <div className="bg-white rounded-lg shadow-sm border border-zinc-200 p-8 mb-6">
             {/* Avatar and Name */}
             <div className="flex items-center gap-6 mb-8 pb-8 border-b border-zinc-200">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white font-bold text-2xl">
-                {user.name.charAt(0).toUpperCase()}
-              </div>
+              {user.profileImage ? (
+                <img 
+                  src={user.profileImage} 
+                  alt={user.name}
+                  className="h-20 w-20 rounded-full object-cover"
+                />
+              ) : (
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white font-bold text-2xl">
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+              )}
               <div>
                 <h2 className="text-2xl font-bold text-zinc-900">{user.name}</h2>
                 <p className="text-zinc-500">{user.email}</p>
@@ -109,35 +117,10 @@ export default function ProfilePage() {
                   <p className="text-zinc-600 bg-zinc-50 px-4 py-2 rounded border border-zinc-200 flex-1">
                     {user.email}
                   </p>
-                  <button
-                    onClick={() => copyToClipboard(user.email)}
-                    className="p-2 hover:bg-zinc-100 rounded border border-zinc-200 transition-colors"
-                    title="Copy email"
-                  >
-                    <Copy className="size-4 text-zinc-600" />
-                  </button>
+                  
                 </div>
               </div>
 
-              {/* User ID */}
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-medium text-zinc-700">
-                  <User className="size-4" />
-                  User ID
-                </label>
-                <div className="flex items-center gap-2">
-                  <p className="text-zinc-600 bg-zinc-50 px-4 py-2 rounded border border-zinc-200 flex-1 truncate">
-                    {user.id}
-                  </p>
-                  <button
-                    onClick={() => copyToClipboard(user.id)}
-                    className="p-2 hover:bg-zinc-100 rounded border border-zinc-200 transition-colors"
-                    title="Copy ID"
-                  >
-                    <Copy className="size-4 text-zinc-600" />
-                  </button>
-                </div>
-              </div>
 
               {/* Plan */}
               <div className="space-y-2">

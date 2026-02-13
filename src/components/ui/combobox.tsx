@@ -30,9 +30,10 @@ interface UserMenuOption {
 interface ComboboxDemoProps {
   userName?: string
   userEmail?: string
+  profileImage?: string
 }
 
-export function ComboboxDemo({ userName = "User", userEmail = "user@example.com" }: ComboboxDemoProps) {
+export function ComboboxDemo({ userName = "User", userEmail = "user@example.com", profileImage }: ComboboxDemoProps) {
   const [open, setOpen] = React.useState(false)
   const [isLoggingOut, setIsLoggingOut] = React.useState(false)
   const router = useRouter()
@@ -93,9 +94,17 @@ export function ComboboxDemo({ userName = "User", userEmail = "user@example.com"
           className="w-full justify-between h-auto border hover:bg-zinc-100"
         >
           <div className="flex items-center gap-1 flex-1 min-w-0">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg flex-shrink-0 bg-gradient-to-br from-violet-500 to-purple-600 text-white font-semibold text-sm">
-              {userName.charAt(0).toUpperCase()}
-            </div>
+            {profileImage ? (
+              <img 
+                src={profileImage} 
+                alt={userName}
+                className="h-10 w-10 rounded-lg object-cover flex-shrink-0"
+              />
+            ) : (
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg flex-shrink-0 bg-gradient-to-br from-violet-500 to-purple-600 text-white font-semibold text-sm">
+                {userName.charAt(0).toUpperCase()}
+              </div>
+            )}
             <div className="flex-1 min-w-0 text-left">
               <p className="text-md font-medium text-text-primary truncate">
                 {userName}
