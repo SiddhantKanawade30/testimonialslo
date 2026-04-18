@@ -16,13 +16,14 @@ export function GoogleAuthButton({ handleGoogleLogin }: GoogleAuthButtonProps) {
         return;
       }
 
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-      if (!backendUrl) {
+      const backendHost = process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+      if (!backendHost) {
         toast.error("Backend URL not configured. Please check your environment variables.");
         console.error("NEXT_PUBLIC_BACKEND_URL is not set");
         return;
       }
 
+      const backendUrl = backendHost.endsWith("/api/v1") ? backendHost : `${backendHost}/api/v1`;
       const url = `${backendUrl}/auth/google`;
       console.log("Sending request to:", url);
 
@@ -37,6 +38,8 @@ export function GoogleAuthButton({ handleGoogleLogin }: GoogleAuthButtonProps) {
       );
 
       if (res.data.token) {
+        // Remove any existing token before setting new one
+        localStorage.removeItem("token");
         localStorage.setItem("token", res.data.token);
         toast.success("Login successful! Redirecting...");
         console.log("User:", res.data.user);

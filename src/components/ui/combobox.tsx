@@ -4,6 +4,7 @@ import * as React from "react"
 import { ChevronDown, User, Settings, CreditCard, LogOut, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { useUser } from "@/context/UserContext"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -37,12 +38,13 @@ export function ComboboxDemo({ userName = "User", userEmail = "user@example.com"
   const [open, setOpen] = React.useState(false)
   const [isLoggingOut, setIsLoggingOut] = React.useState(false)
   const router = useRouter()
+  const { logout } = useUser()
 
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true)
-      // Remove token from localStorage
-      localStorage.removeItem("token")
+      // Use centralized logout function from UserContext
+      logout()
       toast.success("Logged out successfully")
       router.push("/signin")
     } catch (error) {

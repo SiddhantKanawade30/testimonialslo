@@ -17,6 +17,7 @@ import axios from "axios"
 import { useRouter } from "next/navigation"
 import { rateLimitHandlers } from "@/lib/rateLimitHandler"
 import { toast } from "sonner"
+import { useUser } from "@/context/UserContext"
 import { useState } from "react"
 
 export function SigninForm({
@@ -25,6 +26,7 @@ export function SigninForm({
 }: React.ComponentProps<"div">) {
 
   const router = useRouter();
+  const { refreshUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,27 +38,35 @@ export function SigninForm({
     try {
       setIsLoading(true);
 
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signin`, {
-      email,
-      password
-    });
-
-      if(res.status === 200) {
-        toast.success("Login successful! Redirecting...");
-        localStorage.setItem("token", res.data.token);
-        router.push("/overview");
-        
+      const backendHost = process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+      if (!backendHost) {
+        toast.error("Backend URL is not configured. Please set NEXT_PUBLIC_BACKEND_URL.");
+        return;
       }
-      else {
-        toast.error("Login failed");
+
+      const backendUrl = backendHost.endsWith("/api/v1") ? backendHost : `${backendHost}/api/v1`;
+
+      const res = await axios.post(`${backendUrl}/auth/signin`, {
+        email,
+        password,
+      });
+
+      if (res.status === 200 && res.data?.token) {
+        toast.success("Login successful! Redirecting...");
+        localStorage.removeItem("token");
+        localStorage.setItem("token", res.data.token);
+        await refreshUser();
+        router.push("/overview");
+      } else {
+        toast.error(res.data?.message || "Login failed");
       }
     } catch (error: any) {
-      if (error.response?.status === 400) {
-        alert(error.response.data.message);
-    } else {
-      // Handle other errors (rate limiting, network errors, etc.)
-      rateLimitHandlers.auth.handleError(error);
-    }
+      const message = error?.response?.data?.message;
+      if (message) {
+        toast.error(message);
+      } else {
+        rateLimitHandlers.auth.handleError(error);
+      }
     } finally {
       setIsLoading(false);
     }

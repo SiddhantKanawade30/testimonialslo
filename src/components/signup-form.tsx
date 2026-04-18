@@ -41,15 +41,30 @@ export function SignupForm({
         return;
       }
 
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("token");
+      }
+
       setIsLoading(true);
 
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signup`, {
+      const backendHost = process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+      if (!backendHost) {
+        toast.error("Backend URL is not configured. Please set NEXT_PUBLIC_BACKEND_URL.");
+        return;
+      }
+
+      const backendUrl = backendHost.endsWith("/api/v1") ? backendHost : `${backendHost}/api/v1`;
+
+      const res = await axios.post(`${backendUrl}/auth/signup`, {
         name,
         email,
-        password
+        password,
       });
 
-      if(res.status === 201) {
+      if (res.status === 201) {
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("token");
+        }
         toast.success("Account created successfully! Redirecting to sign in...");
         router.push("/signin");
       } else {

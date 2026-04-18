@@ -1,9 +1,9 @@
 "use client";
-import { LayoutGrid, Settings , Airplay , MessageCircle , Heart , Gift, Archive, BrickWall} from 'lucide-react';
+import { LayoutGrid, Settings , Airplay , MessageCircle , Heart , Gift, Archive, BrickWall, LogOut} from 'lucide-react';
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ComboboxDemo } from "./ui/combobox";
 import { useUser } from "@/context/UserContext";
 import type { UserData } from "@/context/UserContext";
@@ -29,10 +29,15 @@ const navItems: NavItem[] = [
 export default function Sidebar({ user }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const { data } = useUser();
+  const { data, logout } = useUser();
+  const router = useRouter();
 
-  
   const userData = user || data?.user;
+
+  const handleLogout = () => {
+    logout();
+    router.push("/signin");
+  };
 
   const isActive = (href: string) => {
     
@@ -142,6 +147,17 @@ export default function Sidebar({ user }: SidebarProps) {
               </div>
             </div>
           )}
+
+          {/* Logout Button */}
+          <div className="px-1 pb-2">
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 w-full rounded-lg px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+            >
+              <LogOut className="size-5" />
+              <span className="text-sm font-medium">Logout</span>
+            </button>
+          </div>
         </div>
       </aside>
 

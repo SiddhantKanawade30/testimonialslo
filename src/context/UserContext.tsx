@@ -29,6 +29,7 @@ interface UserContextType {
   loading: boolean;
   error: string | null;
   refreshUser: () => Promise<void>;
+  logout: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -50,8 +51,13 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      const backenUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-      const response = await axios.get(`${backenUrl}/user/me`, {
+      const backendHost = process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+      if (!backendHost) {
+        throw new Error("Backend URL is not configured. Please set NEXT_PUBLIC_BACKEND_URL.");
+      }
+
+      const backendUrl = backendHost.endsWith("/api/v1") ? backendHost : `${backendHost}/api/v1`;
+      const response = await axios.get(`${backendUrl}/user/me`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -60,6 +66,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       setError(null);
     } catch (err: any) {
       console.error(err);
+      if (axios.isAxiosError(err) && err.response?.status === 401) {
+        localStorage.removeItem("token");
+      }
       rateLimitHandlers.protected.handleError(err, "Failed to fetch user data");
       setError("Failed to fetch user data");
     } finally {
@@ -71,8 +80,14 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     await fetchUserData();
   };
 
+  const logout = () => {
+    localStorage.removeItem("token");
+    setData(null);
+    setError(null);
+  };
+
   return (
-    <UserContext.Provider value={{ data, loading, error, refreshUser }}>
+    <UserContext.Provider value={{ data, loading, error, refreshUser, logout }}>
       {children}
     </UserContext.Provider>
   );
