@@ -53,30 +53,30 @@ export default function Header({
           <h1 className="text-xl sm:text-2xl font-bold text-text-primary mb-2 break-all mr-4">{title}</h1>
           <p className="text-text-secondary line-clamp-2 break-all leading-relaxed mr-4 text-sm sm:text-base">{description}</p>
         </div>
-        <div className="grid grid-cols-3 gap-2 sm:gap-3 w-full">
+        <div className="flex flex-row gap-2 sm:gap-3">
 
           <button
             onClick={onOpenImport}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 sm:px-4 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors text-sm"
+            className="w-auto flex items-center justify-center gap-2 px-3 py-2 sm:px-4 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors text-sm"
           >
             <Import size={16}/>  
-            <span className="hidden sm:inline">Import</span>
+            <span className="inline">Import</span>
           </button>
 
           <button
             onClick={onOpenEmbed}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 sm:px-4 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors text-sm"
+            className="w-auto flex items-center justify-center gap-2 px-3 py-2 sm:px-4 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors text-sm"
           >
             <Code className="size-4" />
-            <span className="hidden sm:inline">Embed</span>
+            <span className="inline">Embed</span>
           </button>
 
-          <Link href={`/spaces/${shareLink?.split('/').pop()}/wall-of-love`} target="_blank" rel="noopener noreferrer" className="block w-full">
+          <Link href={`/spaces/${shareLink?.split('/').pop()}/wall-of-love`} target="_blank" rel="noopener noreferrer" className="block w-auto">
             <button
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 sm:px-4 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors text-sm"
+              className="w-auto flex items-center justify-center gap-2 px-3 py-2 sm:px-4 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors text-sm"
             >
               <BrickWall size={16} /> 
-              <span className="hidden sm:inline">Wall of Love</span>
+              <span className="inline">Wall of Love</span>
             </button>
           </Link>
         </div>
