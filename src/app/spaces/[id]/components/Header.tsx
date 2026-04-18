@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Copy, Code, BrickWall } from "lucide-react";
+import { ArrowLeft, Check, Copy, Code, BrickWall } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Import } from 'lucide-react';
 
@@ -22,6 +22,23 @@ export default function Header({
   onOpenEmbed: () => void;
   onOpenImport: () => void;
 }) {
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!copied) return;
+
+    const timeout = window.setTimeout(() => {
+      setCopied(false);
+    }, 3000);
+
+    return () => window.clearTimeout(timeout);
+  }, [copied]);
+
+  const handleCopyClick = () => {
+    onCopy(shareLink);
+    setCopied(true);
+  };
+
   return (
     <div className="mb-6">
       {/* <Link
@@ -36,11 +53,11 @@ export default function Header({
           <h1 className="text-xl sm:text-2xl font-bold text-text-primary mb-2 break-all mr-4">{title}</h1>
           <p className="text-text-secondary line-clamp-2 break-all leading-relaxed mr-4 text-sm sm:text-base">{description}</p>
         </div>
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 w-full">
 
           <button
             onClick={onOpenImport}
-            className="flex items-center justify-center gap-2 px-3 py-2 sm:px-4 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors text-sm"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 sm:px-4 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors text-sm"
           >
             <Import size={16}/>  
             <span className="hidden sm:inline">Import</span>
@@ -48,15 +65,15 @@ export default function Header({
 
           <button
             onClick={onOpenEmbed}
-            className="flex items-center justify-center gap-2 px-3 py-2 sm:px-4 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors text-sm"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 sm:px-4 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors text-sm"
           >
             <Code className="size-4" />
             <span className="hidden sm:inline">Embed</span>
           </button>
 
-          <Link href={`/spaces/${shareLink?.split('/').pop()}/wall-of-love`} target="_blank" rel="noopener noreferrer">
+          <Link href={`/spaces/${shareLink?.split('/').pop()}/wall-of-love`} target="_blank" rel="noopener noreferrer" className="block w-full">
             <button
-              className="flex items-center justify-center gap-2 px-3 py-2 sm:px-4 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors text-sm"
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 sm:px-4 bg-text-primary text-white rounded-lg hover:bg-zinc-800 transition-colors text-sm"
             >
               <BrickWall size={16} /> 
               <span className="hidden sm:inline">Wall of Love</span>
@@ -75,11 +92,15 @@ export default function Header({
             className="flex-1 text-xs sm:text-sm bg-transparent border-none outline-none text-text-secondary min-w-0"
           />
           <button
-            onClick={() => onCopy(shareLink)}
-            className="p-1.5 sm:p-2 hover:bg-zinc-200 rounded transition-colors flex-shrink-0"
+            onClick={handleCopyClick}
+            className="p-1.5 sm:p-2 hover:bg-zinc-200 rounded transition-colors shrink-0"
             title="Copy URL"
           >
-            <Copy className="size-3 sm:size-4 text-text-secondary" />
+            {copied ? (
+              <Check className="size-3 sm:size-4 text-text-secondary" />
+            ) : (
+              <Copy className="size-3 sm:size-4 text-text-secondary" />
+            )}
           </button>
         </div>
       </div>
