@@ -61,6 +61,7 @@ export function CreateSpaceDialog({ open, onOpenChange, onSpaceCreated }: Create
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [popoverWidth, setPopoverWidth] = useState<number | undefined>(undefined);
   
@@ -68,6 +69,17 @@ export function CreateSpaceDialog({ open, onOpenChange, onSpaceCreated }: Create
   const spaceNameRef = useRef<HTMLInputElement>(null);
   const spaceDescriptionRef = useRef<HTMLTextAreaElement>(null);
   const spaceWebsiteUrlRef = useRef<HTMLInputElement>(null);
+
+  const isValidUrl = (value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) return true;
+    try {
+      new URL(trimmed);
+      return true;
+    } catch {
+      return false;
+    }
+  };
 
   useEffect(() => {
     if (categoryOpen && triggerRef.current) {
@@ -84,17 +96,30 @@ export function CreateSpaceDialog({ open, onOpenChange, onSpaceCreated }: Create
       return;
     }
 
-    const formData = {
+    const formData: Record<string, any> = {
       title: spaceNameRef.current?.value || "",
       description: spaceDescriptionRef.current?.value || "",
       websiteUrl: spaceWebsiteUrlRef.current?.value || "",
-      category: selectedCategory,
     };
 
+    if (selectedCategory) {
+      formData.category = selectedCategory;
+    }
+
     if (!formData.title || !formData.description) {
+      setErrorMessage("Title and description are required.");
       toast.error("Title and description are required");
       return;
     }
+
+    if (!isValidUrl(formData.websiteUrl)) {
+      const invalidUrlMessage = "Please enter a valid website URL, including https:// or http://.";
+      setErrorMessage(invalidUrlMessage);
+      toast.error(invalidUrlMessage);
+      return;
+    }
+
+    setErrorMessage(null);
 
     try {
       setIsLoading(true);
@@ -134,6 +159,10 @@ export function CreateSpaceDialog({ open, onOpenChange, onSpaceCreated }: Create
       }
     } catch (error: any) {
       console.error("Create space error:", error);
+      const apiMessage = error?.response?.data?.message;
+      const fallbackMessage = apiMessage || "Failed to create space. Please check your details and try again.";
+      setErrorMessage(fallbackMessage);
+      toast.error(fallbackMessage);
       rateLimitHandlers.protected.handleError(error, "Failed to create space");
     } finally {
       setIsLoading(false);
@@ -145,6 +174,7 @@ export function CreateSpaceDialog({ open, onOpenChange, onSpaceCreated }: Create
     if (spaceDescriptionRef.current) spaceDescriptionRef.current.value = "";
     if (spaceWebsiteUrlRef.current) spaceWebsiteUrlRef.current.value = "";
     setSelectedCategory("");
+    setErrorMessage(null);
     onOpenChange(false);
   };
 
@@ -199,8 +229,16 @@ export function CreateSpaceDialog({ open, onOpenChange, onSpaceCreated }: Create
               type="text"
               ref={spaceWebsiteUrlRef}
               placeholder="https://example.com"
+              onChange={() => {
+                if (errorMessage) {
+                  setErrorMessage(null);
+                }
+              }}
               className="w-full h-9 px-3 rounded-md border border-zinc-300 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:border-transparent"
             />
+            {errorMessage ? (
+              <p className="text-sm text-red-500 mt-1">{errorMessage}</p>
+            ) : null}
           </div>
 
           <div className="space-y-2">

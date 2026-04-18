@@ -125,7 +125,7 @@ export default function SpacesPage() {
             "Authorization": `Bearer ${localStorage.getItem("token")}`
           }
         });
-        setSpaces(res.data);
+        setSpaces(res.data.campaigns || []);
         console.log(res.data);
       } catch (error: any) {
         console.log(error);

@@ -43,7 +43,7 @@ export default function PublicTestimonialPage({ params }: { params: Promise<{ sl
   const fetchCampaign = async (campaignId: any) => {
     try {
       const res = await axios.get(`${BACKEND_URL}/campaigns/get/${campaignId}`);
-      setCampaign(res.data as Campaign);
+      setCampaign(res.data.campaign as Campaign);
     } catch (error: any) {
       console.log("Error fetching campaign:", error);
       rateLimitHandlers.public.handleError(error, "Failed to load campaign");
