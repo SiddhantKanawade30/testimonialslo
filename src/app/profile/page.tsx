@@ -72,39 +72,39 @@ export default function ProfilePage() {
     <div className="flex min-h-screen bg-gray-100 font-sans">
       <Sidebar user={user} isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
       <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}>
-        <div className="max-w-2xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-zinc-900">Profile Settings</h1>
-            <p className="text-zinc-500 mt-2">Manage your account information and preferences</p>
+        <div className="max-w-2xl mx-auto px-4 sm:px-6">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-zinc-900">Profile Settings</h1>
+            <p className="text-sm sm:text-base text-zinc-500 mt-2">Manage your account information and preferences</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-zinc-200 p-8 mb-6">
-            <div className="flex items-center gap-6 mb-8 pb-8 border-b border-zinc-200">
+          <div className="bg-white rounded-lg shadow-sm border border-zinc-200 p-4 sm:p-8 mb-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 mb-6 sm:mb-8 pb-6 sm:pb-8 border-b border-zinc-200">
               {user.profileImage ? (
                 <img
                   src={user.profileImage}
                   alt={user.name}
-                  className="h-20 w-20 rounded-full object-cover"
+                  className="h-16 w-16 sm:h-20 sm:w-20 rounded-full object-cover"
                 />
               ) : (
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white font-bold text-2xl">
+                <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white font-bold text-xl sm:text-2xl">
                   {user.name.charAt(0).toUpperCase()}
                 </div>
               )}
-              <div>
-                <h2 className="text-2xl font-bold text-zinc-900">{user.name}</h2>
-                <p className="text-zinc-500">{user.email}</p>
+              <div className="text-center sm:text-left">
+                <h2 className="text-xl sm:text-2xl font-bold text-zinc-900">{user.name}</h2>
+                <p className="text-sm sm:text-base text-zinc-500">{user.email}</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-medium text-zinc-700">
+                <label className="flex items-center gap-2 text-xs sm:text-sm font-medium text-zinc-700">
                   <Mail className="size-4" />
                   Email Address
                 </label>
                 <div className="flex items-center gap-2">
-                  <p className="text-zinc-600 bg-zinc-50 px-4 py-2 rounded border border-zinc-200 flex-1">
+                  <p className="text-xs sm:text-sm text-zinc-600 bg-zinc-50 px-3 sm:px-4 py-2 rounded border border-zinc-200 flex-1">
                     {user.email}
                   </p>
 
@@ -113,12 +113,12 @@ export default function ProfilePage() {
 
 
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-medium text-zinc-700">
+                <label className="flex items-center gap-2 text-xs sm:text-sm font-medium text-zinc-700">
                   <Zap className="size-4" />
                   Current Plan
                 </label>
                 <div className="flex items-center gap-2">
-                  <span className={`px-4 py-2 rounded border font-medium ${user.plan === "PREMIUM"
+                  <span className={`text-xs sm:text-sm px-3 sm:px-4 py-2 rounded border font-medium ${user.plan === "PREMIUM"
                       ? "bg-violet-50 border-violet-200 text-violet-700"
                       : "bg-zinc-50 border-zinc-200 text-zinc-700"
                     }`}>
@@ -128,31 +128,31 @@ export default function ProfilePage() {
               </div>
 
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-medium text-zinc-700">
+                <label className="flex items-center gap-2 text-xs sm:text-sm font-medium text-zinc-700">
                   <Zap className="size-4" />
                   Videos Used
                 </label>
-                <p className="text-zinc-600 bg-zinc-50 px-4 py-2 rounded border border-zinc-200">
+                <p className="text-xs sm:text-sm text-zinc-600 bg-zinc-50 px-3 sm:px-4 py-2 rounded border border-zinc-200">
                   {user.videoCount} video(s)
                 </p>
               </div>
 
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-medium text-zinc-700">
+                <label className="flex items-center gap-2 text-xs sm:text-sm font-medium text-zinc-700">
                   <Calendar className="size-4" />
                   Member Since
                 </label>
-                <p className="text-zinc-600 bg-zinc-50 px-4 py-2 rounded border border-zinc-200">
+                <p className="text-xs sm:text-sm text-zinc-600 bg-zinc-50 px-3 sm:px-4 py-2 rounded border border-zinc-200">
                   {formatDate(user.createdAt)}
                 </p>
               </div>
 
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-medium text-zinc-700">
+                <label className="flex items-center gap-2 text-xs sm:text-sm font-medium text-zinc-700">
                   <Calendar className="size-4" />
                   Plan Expires
                 </label>
-                <p className="text-zinc-600 bg-zinc-50 px-4 py-2 rounded border border-zinc-200">
+                <p className="text-xs sm:text-sm text-zinc-600 bg-zinc-50 px-3 sm:px-4 py-2 rounded border border-zinc-200">
                   {user.planExpiresAt ? formatDate(user.planExpiresAt) : "No expiration"}
                 </p>
               </div>
@@ -160,22 +160,22 @@ export default function ProfilePage() {
           </div>
 
           {user.plan === "FREE" && (
-            <div className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-lg border border-violet-200 p-6 mb-6">
-              <h3 className="text-lg font-semibold text-violet-900 mb-2">Upgrade to Premium</h3>
-              <p className="text-violet-700 mb-4">
+            <div className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-lg border border-violet-200 p-4 sm:p-6 mb-6">
+              <h3 className="text-base sm:text-lg font-semibold text-violet-900 mb-2">Upgrade to Premium</h3>
+              <p className="text-sm sm:text-base text-violet-700 mb-4">
                 Get unlimited videos, advanced features, and priority support
               </p>
-              <a href="/plans" className="inline-block bg-violet-600 hover:bg-violet-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+              <a href="/plans" className="inline-block bg-violet-600 hover:bg-violet-700 text-white text-sm sm:text-base px-4 sm:px-6 py-2 rounded-lg font-medium transition-colors">
                 View Plans
               </a>
             </div>
           )}
 
-          <div className="flex justify-end">
+          <div className="flex justify-end mt-6 sm:mt-8">
             <button
               onClick={handleLogout}
               disabled={isLoggingOut}
-              className="inline-flex items-center justify-center gap-2 px-6 py-2 rounded-lg font-medium transition-colors bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 disabled:opacity-50 disabled:pointer-events-none"
+              className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2 rounded-lg text-sm sm:text-base font-medium transition-colors bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 disabled:opacity-50 disabled:pointer-events-none"
             >
               {isLoggingOut ? (
                 <>
