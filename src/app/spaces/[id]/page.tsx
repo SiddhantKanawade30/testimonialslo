@@ -39,6 +39,7 @@ export default function SpaceDetailPage() {
   const [importModalOpen, setImportModalOpen] = useState(false);
   const [archiveDialogOpen, setArchiveDialogOpen] = useState(false);
   const [testimonialToArchive, setTestimonialToArchive] = useState<{ id: string; author: string } | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { data: userData, loading: authLoading } = useUser();
 
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -198,8 +199,8 @@ export default function SpaceDetailPage() {
   return (
     <div className="flex min-h-screen bg-background-offset font-sans">
       <Toaster position="bottom-right" />
-      <Sidebar />
-      <Topbar>
+      <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+      <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}>
         {!authLoading && userData?.user && (
           <>
             <Header

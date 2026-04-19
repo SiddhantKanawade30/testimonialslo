@@ -16,6 +16,7 @@ export default function ArchivedPage() {
   const [viewMode, setViewMode] = useState<"cards">("cards");
   const router = useRouter();
   const { data, loading: authLoading } = useUser();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !data?.user) {
@@ -76,8 +77,8 @@ export default function ArchivedPage() {
   if (authLoading) {
     return (
       <div className="flex min-h-screen bg-zinc-50 font-sans">
-        <Sidebar />
-        <Topbar>
+        <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+        <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}>
           <SpacesSkeletonLoader />
         </Topbar>
       </div>
@@ -87,8 +88,8 @@ export default function ArchivedPage() {
   return (
     <div className="flex min-h-screen bg-background-offset font-sans">
       <Toaster position="bottom-right" />
-      <Sidebar />
-      <Topbar>
+      <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+      <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}>
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">

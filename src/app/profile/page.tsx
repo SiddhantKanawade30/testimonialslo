@@ -13,6 +13,7 @@ export default function ProfilePage() {
   const { data, loading } = useUser();
   const user = data?.user;
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -44,8 +45,8 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="flex min-h-screen bg-gray-100 font-sans">
-        <Sidebar user={user} />
-        <Topbar>
+        <Sidebar user={user} isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+        <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}>
           <div className="flex items-center justify-center h-96">
             <p className="text-zinc-500">Loading...</p>
           </div>
@@ -57,8 +58,8 @@ export default function ProfilePage() {
   if (!user) {
     return (
       <div className="flex min-h-screen bg-gray-100 font-sans">
-        <Sidebar user={undefined} />
-        <Topbar>
+        <Sidebar user={undefined} isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+        <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}>
           <div className="flex items-center justify-center h-96">
             <p className="text-zinc-500">Failed to load profile</p>
           </div>
@@ -69,8 +70,8 @@ export default function ProfilePage() {
 
   return (
     <div className="flex min-h-screen bg-gray-100 font-sans">
-      <Sidebar user={user} />
-      <Topbar>
+      <Sidebar user={user} isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+      <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}>
         <div className="max-w-2xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-zinc-900">Profile Settings</h1>

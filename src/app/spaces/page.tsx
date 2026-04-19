@@ -29,6 +29,8 @@ export default function SpacesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [spaces, setSpaces] = useState<Space[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [spaceToDelete, setSpaceToDelete] = useState<{ id: string; title: string } | null>(null);
   const router = useRouter();
@@ -140,8 +142,8 @@ export default function SpacesPage() {
   return (
     <div className="flex min-h-screen bg-background-offset font-sans">
       <Toaster position="bottom-right" />
-      <Sidebar />
-      <Topbar>
+      <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+      <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}>
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-text-primary">All Spaces</h1>

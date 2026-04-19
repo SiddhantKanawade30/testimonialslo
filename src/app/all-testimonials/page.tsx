@@ -25,6 +25,7 @@ import { MemoGenericTestimonialCard, TestimonialData } from "@/components/Testim
 export default function AllTestimonialsPage() {
   const router = useRouter();
   const { data: userData, loading: authLoading } = useUser();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !userData?.user) {
@@ -111,8 +112,8 @@ export default function AllTestimonialsPage() {
   return (
     <div className="flex min-h-screen bg-background-offset font-sans">
       <Toaster position="bottom-right" />
-      <Sidebar />
-      <Topbar>
+      <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+      <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}>
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">

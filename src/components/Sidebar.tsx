@@ -148,25 +148,6 @@ export default function Sidebar({ user, isOpen: externalIsOpen, onToggle }: Side
 
         </div>
       </aside>
-
-      {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="fixed left-4 top-4 z-50 lg:hidden rounded-lg bg-white p-2 shadow-md border border-zinc-200"
-        >
-          <svg
-            className="h-6 w-6 text-zinc-900"
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-      )}
     </>
   );
 }
