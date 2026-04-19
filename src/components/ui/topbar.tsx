@@ -118,7 +118,7 @@ function UserProfileDropdown() {
   );
 }
 
-export default function Topbar({ children, campaigns = [] }: { children: React.ReactNode; campaigns?: Campaign[] }) {
+export default function Topbar({ children, campaigns = [], onToggleSidebar }: { children: React.ReactNode; campaigns?: Campaign[]; onToggleSidebar?: () => void }) {
   const pathname = usePathname();
   const params = useParams();
 
@@ -149,6 +149,23 @@ export default function Topbar({ children, campaigns = [] }: { children: React.R
         <div className="flex items-center justify-between px-4 py-2 gap-4">
           {/* Left: Current Page */}
           <div className="flex items-center gap-3 min-w-0">
+            {/* Mobile menu button */}
+            <button
+              onClick={onToggleSidebar}
+              className="lg:hidden p-2 rounded-md hover:bg-zinc-100 transition-colors"
+            >
+              <svg
+                className="h-5 w-5 text-zinc-600"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
             <div className="flex items-center text-md gap-1 text-text-primary">
               <h2 className="text-base font-semibold whitespace-nowrap">
                 {getPageTitle()}

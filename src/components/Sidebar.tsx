@@ -1,9 +1,9 @@
 "use client";
-import { LayoutGrid, Settings , Airplay , MessageCircle , Heart , Gift, Archive, BrickWall, LogOut} from 'lucide-react';
+import { LayoutGrid, Settings , Airplay , MessageCircle , Heart , Gift, Archive, BrickWall} from 'lucide-react';
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { ComboboxDemo } from "./ui/combobox";
 import { useUser } from "@/context/UserContext";
 import type { UserData } from "@/context/UserContext";
@@ -16,6 +16,8 @@ interface NavItem {
 
 interface SidebarProps {
   user?: UserData;
+  isOpen?: boolean;
+  onToggle?: () => void;
 }
 
 const navItems: NavItem[] = [
@@ -26,18 +28,14 @@ const navItems: NavItem[] = [
   { name: "Favourites", href: "/favourites", icon: <Heart className="size-5" /> }
 ];
 
-export default function Sidebar({ user }: SidebarProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function Sidebar({ user, isOpen: externalIsOpen, onToggle }: SidebarProps) {
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
+  const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
+  const setIsOpen = onToggle || setInternalIsOpen;
   const pathname = usePathname();
-  const { data, logout } = useUser();
-  const router = useRouter();
+  const { data } = useUser();
 
   const userData = user || data?.user;
-
-  const handleLogout = () => {
-    logout();
-    router.push("/signin");
-  };
 
   const isActive = (href: string) => {
     
@@ -77,7 +75,7 @@ export default function Sidebar({ user }: SidebarProps) {
             
             {/* Hamburg icon*/}
             <button
-              onClick={() => setIsOpen(false)}
+              onClick={() => onToggle ? onToggle() : setInternalIsOpen(false)}
               className="lg:hidden p-1 rounded-md hover:bg-zinc-100 transition-colors"
             >
               <svg
@@ -107,7 +105,7 @@ export default function Sidebar({ user }: SidebarProps) {
                   <li key={item.name}>
                     <Link
                       href={item.href}
-                      onClick={() => setIsOpen(false)} 
+                      onClick={() => onToggle ? onToggle() : setInternalIsOpen(false)} 
                       className={`flex items-center gap-2 rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
                         active
                           ? "bg-zinc-100 text-text-primary"
@@ -148,16 +146,6 @@ export default function Sidebar({ user }: SidebarProps) {
             </div>
           )}
 
-          {/* Logout Button */}
-          <div className="px-1 pb-2">
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 w-full rounded-lg px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
-            >
-              <LogOut className="size-5" />
-              <span className="text-sm font-medium">Logout</span>
-            </button>
-          </div>
         </div>
       </aside>
 

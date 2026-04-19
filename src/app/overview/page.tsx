@@ -9,11 +9,12 @@ import { DottedLineChart } from "@/components/ui/dotted-line";
 import DashboardSkeleton from "@/components/loaders/DashboardSkeleton";
 import Link from "next/link";
 import { useUser } from "@/context/UserContext";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const router = useRouter();
   const { data, loading } = useUser();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !data?.user) {
@@ -24,8 +25,8 @@ export default function Home() {
   if (loading) {
     return (
       <div className="flex min-h-screen bg-gray-100 font-sans">
-        <Sidebar user={data?.user} />
-        <Topbar campaigns={data?.user?.campaigns || []}>
+        <Sidebar user={data?.user} isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+        <Topbar campaigns={data?.user?.campaigns || []} onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}>
           <DashboardSkeleton />
         </Topbar>
       </div>
@@ -38,8 +39,8 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen bg-background-offset font-sans">
-      <Sidebar user={data?.user} />
-      <Topbar campaigns={data?.user?.campaigns || []}>
+      <Sidebar user={data?.user} isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+      <Topbar campaigns={data?.user?.campaigns || []} onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}>
         <div className="grid gap-6 md:grid-cols-3 mb-12 mt-4">
           <div className="rounded-md bg-white px-6 space-y-2 py-3 border border-gray-300">
             <h3 className="text-base flex items-center gap-1 mb-2 font-medium text-text-secondary">
@@ -64,7 +65,7 @@ export default function Home() {
               {data?.totalCampaigns}
             </p>
             <div className="text-md">
-              {data?.totalCampaigns} out of 5 spaces created
+              {data?.totalCampaigns} out of 2 spaces created
             </div>
           </div>
           <div className="rounded-md bg-white px-6 space-y-2 py-3 border border-gray-300">
